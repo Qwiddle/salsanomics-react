@@ -6,12 +6,13 @@ import TokenCopy from '../../components/TokenCopy/TokenCopy';
 import P from '../../components/P';
 
 const PageWrapper = styled.section`
-  padding: 4em;
+  padding: 1em;
   background: papayawhip;
   display: flex;
   flex-direction: row;
   justify-content: center;
   gap: 30px;
+  flex-wrap: wrap;
 `;
 
 const FarmCard = styled.div`
