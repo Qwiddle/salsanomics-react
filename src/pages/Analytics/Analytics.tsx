@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { ReactComponent as SalsaToken } from './assets/spicyswap_logo.svg';
-import TokenCopy from '../../components/TokenCopy/TokenCopy';
+import TokenCopy from '../../components/TokenCopy';
 import P from '../../components/P';
 
 const PageWrapper = styled.section`
