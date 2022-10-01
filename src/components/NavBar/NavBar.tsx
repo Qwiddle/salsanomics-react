@@ -7,16 +7,22 @@ const Bar = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-around;
+  flex-direction: row;
+  @media screen and (max-width: 600px) {
+    flex-direction: column;
+    height: 100px;
+  }
 `;
 
 const Links = styled.ul`
   list-style: none;
   display: flex;
   gap: 32px;
+  padding: 0px;
 `;
 
 const Logo = styled.p`
-  min-width: 175px;
+  min-width: 130px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
@@ -40,6 +46,9 @@ const LinkText = styled.a`
   font-style: normal;
   text-transform: capitalize;
   text-decoration: none;
+  @media screen and (max-width: 600px) {
+    padding: 2px;
+  }
 `;
 
 const pages: string[] = ['analytics', 'farm', 'support', 'settings'];
