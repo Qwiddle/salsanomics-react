@@ -3,7 +3,6 @@ import 'typeface-inter';
 import styled from 'styled-components';
 
 const Bar = styled.div`
-  width: 100vw;
   height: 84px;
   display: flex;
   align-items: center;
@@ -17,7 +16,7 @@ const Links = styled.ul`
 `;
 
 const Logo = styled.p`
-  min-width: 150px;
+  min-width: 175px;
   font-family: 'Inter';
   font-style: normal;
   font-weight: 600;
