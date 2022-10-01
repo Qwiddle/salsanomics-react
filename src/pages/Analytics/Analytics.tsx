@@ -8,7 +8,12 @@ import {
   CardHeader,
   CardHeaderText,
 } from '../../components/Card';
-import { ReactComponent as SalsaToken } from './assets/spicyswap_logo.svg';
+import { IActiveProject } from '../../const/ecosystem';
+import chart from '../../assets/chart.png';
+
+export interface IAnalyticsProps {
+  ecosystem: IActiveProject[];
+}
 
 const PageWrapper = styled.section`
   padding: 1em;
@@ -20,28 +25,31 @@ const PageWrapper = styled.section`
   flex-wrap: wrap;
 `;
 
-export default function Analytics(): JSX.Element {
+export default function Analytics(props: IAnalyticsProps): JSX.Element {
+  const { ecosystem } = props;
+
   return (
     <PageWrapper>
-      <Card>
-        <CardHeader>
-          <CardHeaderText>SpicySwap 🌶️</CardHeaderText>
-        </CardHeader>
-        <CardBody>
-          <CardBox>
-            <P>Token</P>
-            <TokenCopy ticker="SPI" Logo={SalsaToken} />
-          </CardBox>
-          <CardBox>
-            <P>TVL</P>
-            <P>150,123 ꜩ</P>
-          </CardBox>
-          <CardBox>
-            <P>Volume (24h)</P>
-            <P>712 ꜩ</P>
-          </CardBox>
-        </CardBody>
-      </Card>
+      {ecosystem.map((proj) => (
+        <Card>
+          <CardHeader>
+            <CardHeaderText>{proj.name}</CardHeaderText>
+          </CardHeader>
+          <CardBody>
+            <CardBox>
+              <P>Token</P>
+              <TokenCopy ticker={proj.ticker} Logo={proj.logo} />
+            </CardBox>
+            <CardBox>
+              <P>TVL</P>
+              <P>150,123 ꜩ</P>
+            </CardBox>
+            <CardBox>
+              <img src={chart} alt="chart" />
+            </CardBox>
+          </CardBody>
+        </Card>
+      ))}
     </PageWrapper>
   );
 }
