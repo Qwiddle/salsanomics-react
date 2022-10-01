@@ -1,12 +1,9 @@
-import './App.css';
 import { useEffect, useState } from 'react';
 import NavBar from './components/NavBar';
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Analytics from './pages/Analytics/Analytics';
 import { salsaEcosystem, IActiveProject } from './const/ecosystem';
 
 function App() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [ecosystem, setEcosystem] = useState<IActiveProject[]>();
 
   useEffect(() => {
