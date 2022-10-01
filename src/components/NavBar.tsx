@@ -2,7 +2,7 @@ import * as React from 'react';
 import 'typeface-inter';
 import styled from 'styled-components';
 
-const Bar = styled.div`
+const Nav = styled.div`
   height: 84px;
   display: flex;
   align-items: center;
@@ -14,11 +14,19 @@ const Bar = styled.div`
   }
 `;
 
-const Links = styled.ul`
+const NavItems = styled.ul`
   list-style: none;
   display: flex;
   gap: 32px;
   padding: 0px;
+`;
+
+const NavItem = styled.li`
+  display: inline-block;
+  text-decoration: none;
+  &:hover: {
+    background-color: white;
+  }
 `;
 
 const Logo = styled.p`
@@ -31,41 +39,28 @@ const Logo = styled.p`
   text-transform: capitalize;
 `;
 
-const NavItem = styled.li`
-  display: inline-block;
-  text-decoration: none;
-  &:hover: {
-    background-color: white;
-  }
-`;
-
-const LinkText = styled.a`
+const A = styled.a`
   color: black;
   font-family: 'Inter';
   font-size: 16px;
   font-style: normal;
   text-transform: capitalize;
   text-decoration: none;
-  @media screen and (max-width: 600px) {
-    padding: 2px;
-  }
 `;
 
 const pages: string[] = ['analytics', 'farm', 'support', 'settings'];
 
 export default function NavBar(): JSX.Element {
   return (
-    <div>
-      <Bar>
-        <Logo>📊 Salsanomics</Logo>
-        <Links>
-          {pages.map((page) => (
-            <NavItem key={page}>
-              <LinkText href={`/${page}`}>{page}</LinkText>
-            </NavItem>
-          ))}
-        </Links>
-      </Bar>
-    </div>
+    <Nav>
+      <Logo>📊 Salsanomics</Logo>
+      <NavItems>
+        {pages.map((page) => (
+          <NavItem key={page}>
+            <A href={`/${page}`}>{page}</A>
+          </NavItem>
+        ))}
+      </NavItems>
+    </Nav>
   );
 }
