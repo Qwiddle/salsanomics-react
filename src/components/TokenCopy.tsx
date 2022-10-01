@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import P from '../P';
+import P from './P';
 
 export interface IAppProps {
   ticker: string;

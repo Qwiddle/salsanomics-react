@@ -1,5 +1,5 @@
 import './App.css';
-import NavBar from './components/NavBar/NavBar';
+import NavBar from './components/NavBar';
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 import Analytics from './pages/Analytics/Analytics';
 
