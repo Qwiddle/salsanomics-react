@@ -52,7 +52,7 @@ export default function NavBar(): JSX.Element {
         <Logo>📊 Salsanomics</Logo>
         <Links>
           {pages.map((page) => (
-            <NavItem>
+            <NavItem key={page}>
               <LinkText href={`/${page}`}>{page}</LinkText>
             </NavItem>
           ))}
