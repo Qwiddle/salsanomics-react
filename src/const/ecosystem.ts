@@ -15,6 +15,20 @@ export const spicySwap: IActiveProject = {
   logo: SalsaLogo,
 };
 
+export interface ISpicyToken {
+  symbol: string;
+  derivedXtz: number;
+  tag: number;
+  decimals: number;
+}
+
+export interface ISpicyPool {
+  symbol: string;
+  derivedXtz: number;
+  tag: number;
+  decimals: number;
+}
+
 export const matterDefi: IActiveProject = {
   name: 'MatterDefi',
   ticker: 'MTTR',
