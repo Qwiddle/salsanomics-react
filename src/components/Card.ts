@@ -37,12 +37,14 @@ export const CardHeaderText = styled.p`
 
 export const CardBox = styled.div`
   min-width: 80px;
+  min-height: 50px;
   border-radius: 8px;
   background: #f0f0f0;
   padding: 8px;
   display: flex;
   align-items: center;
-  justify-content: space-between;
+  justify-content: space-around;
+  flex-wrap: wrap;
 `;
 
 export const CardBody = styled.div`
