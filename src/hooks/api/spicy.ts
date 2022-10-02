@@ -1,3 +1,5 @@
+import { ISpicyPool, ISpicyToken } from '../../const/ecosystem';
+
 const SPICY_API = 'https://spicyb.sdaotools.xyz/api/rest';
 
 const calculateDayAgg = () => {
@@ -6,10 +8,7 @@ const calculateDayAgg = () => {
   return Math.floor(aggStart.getTime() / 1000);
 };
 
-export const fetchTokenPrice = async (
-  contract: string,
-  agg = calculateDayAgg()
-) => {
+export const fetchTokenPrice = async (contract: string, agg = calculateDayAgg()) => {
   const req = `${SPICY_API}/TokenList?_ilike=${contract}:0&day_agg_start=${agg}`;
   const res = await fetch(req);
 
@@ -25,7 +24,7 @@ export const fetchTokenPrice = async (
   throw new Error(`Failed to fetch price for ${contract}`);
 };
 
-export const fetchSpicyTokens = async (agg = calculateDayAgg()) => {
+export const fetchSpicyTokens = async (agg = calculateDayAgg()): Promise<ISpicyToken[]> => {
   const req = `${SPICY_API}/TokenList?day_agg_start=${agg}`;
   const res = await fetch(req);
 
@@ -49,7 +48,7 @@ export const fetchSpicyTokens = async (agg = calculateDayAgg()) => {
   throw new Error('Failed to fetch SpicySwap tokens');
 };
 
-export const fetchSpicyPools = async () => {
+export const fetchSpicyPools = async (): Promise<ISpicyPool[]> => {
   const res = await fetch(`${SPICY_API}/PoolListAll/`);
 
   if (res.ok) {
