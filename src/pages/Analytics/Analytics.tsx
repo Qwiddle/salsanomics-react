@@ -17,7 +17,7 @@ export interface IAnalyticsProps {
 
 const PageWrapper = styled.section`
   padding: 1em;
-  background: #d8d8d8;
+  background: #f0f0f0;
   display: flex;
   flex-direction: row;
   justify-content: center;
