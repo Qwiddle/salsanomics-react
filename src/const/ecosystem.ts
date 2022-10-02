@@ -29,6 +29,13 @@ export interface ISpicyPool {
   decimals: number;
 }
 
+export interface ISpicyMetric {
+  dailyXtz: number;
+  tvlXtz: number;
+  volumeXtz: number;
+  txCount: number;
+}
+
 export const matterDefi: IActiveProject = {
   name: 'MatterDefi',
   ticker: 'MTTR',

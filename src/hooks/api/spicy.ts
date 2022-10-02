@@ -1,4 +1,4 @@
-import { ISpicyPool, ISpicyToken } from '../../const/ecosystem';
+import { ISpicyMetric, ISpicyPool, ISpicyToken } from '../../const/ecosystem';
 
 const SPICY_API = 'https://spicyb.sdaotools.xyz/api/rest';
 
@@ -6,6 +6,27 @@ const calculateDayAgg = () => {
   const aggStart = new Date();
   aggStart.setDate(aggStart.getDate() - 7);
   return Math.floor(aggStart.getTime() / 1000);
+};
+
+export const fetchDailyMetrics = async (): Promise<ISpicyMetric[]> => {
+  const req = `${SPICY_API}/SpicyDailyMetrics`;
+  const res = await fetch(req);
+
+  if (res.ok) {
+    const json = await res.json();
+    const metrics = json.spicy_day_data;
+
+    const today = metrics.map((metric: any) => ({
+      dailyXtz: metric.dailyvolumextz,
+      tvlXtz: metric.totalliquidityxtz,
+      volumeXtz: metric.totalvolumextz,
+      txCount: metric.txcount,
+    }));
+
+    return today;
+  }
+
+  throw new Error(`Failed to fetch daily metrics.`);
 };
 
 export const fetchTokenPrice = async (contract: string, agg = calculateDayAgg()) => {
