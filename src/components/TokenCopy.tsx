@@ -3,6 +3,7 @@ import P from './P';
 
 export interface IAppProps {
   ticker: string;
+  amount?: number;
   Logo: React.ComponentType;
 }
 
@@ -12,13 +13,14 @@ const TokenDetail = styled.div`
   align-items: center;
 `;
 
-export default function TokenCopy(props: IAppProps): JSX.Element {
+export default function TokenCopy({ amount = 0, ...props }: IAppProps): JSX.Element {
   const { ticker, Logo } = props;
 
   return (
     <TokenDetail>
-      <Logo />
+      {amount}&nbsp;
       <P>{ticker}</P>
+      <Logo />
     </TokenDetail>
   );
 }
