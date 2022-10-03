@@ -8,8 +8,8 @@ export interface IAppProps {
 }
 
 const TokenDetail = styled.div`
-  width: 80px;
-  display: flex;
+  max-width: 120px;
+  display: inline-flex;
   align-items: center;
 `;
 

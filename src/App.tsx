@@ -7,7 +7,6 @@ import { salsaEcosystem, IActiveProject } from './const/ecosystem';
 const AppContainer = styled.main`
   display: flex;
   height: 100vh;
-  width: 100vw;
   flex-direction: column;
 `;
 

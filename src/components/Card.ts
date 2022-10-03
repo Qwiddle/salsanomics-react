@@ -1,13 +1,12 @@
 import styled from 'styled-components';
 
 export const Card = styled.div`
-  min-width: 340px;
-  height: 400px;
+  width: 300px;
   display: flex;
   padding: 10px;
+  max-height: 400px;
   gap: 10px;
   flex-direction: column;
-  justify-content: space-between;
   align-items: center;
   background: #fcfcfc;
   box-shadow: 0px 80px 105px rgba(0, 0, 0, 0.07), 0px 10px 13px rgba(0, 0, 0, 0.03);
