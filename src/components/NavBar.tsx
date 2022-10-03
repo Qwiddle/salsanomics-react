@@ -19,6 +19,9 @@ const NavItems = styled.ul`
   display: flex;
   gap: 32px;
   padding: 0px;
+  @media screen and (max-width: 600px) {
+    gap: 18px;
+  }
 `;
 
 const NavItem = styled.li`
@@ -46,6 +49,23 @@ const A = styled.a`
   font-style: normal;
   text-transform: capitalize;
   text-decoration: none;
+  position: relative;
+  padding-bottom: 5px;
+  &:after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 0.1em;
+    background-color: black;
+    opacity: 0;
+    transition: opacity 300ms, transform 300ms;
+  }
+  &:hover:after {
+    opacity: 1;
+    transform: translate3d(0, 0.2em, 0);
+  }
 `;
 
 const pages: string[] = ['analytics', 'farm', 'support', 'settings'];
