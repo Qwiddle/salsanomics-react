@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import styled from 'styled-components';
 import NavBar from './components/NavBar';
 import Analytics from './pages/Analytics/Analytics';
 import { salsaEcosystem, IActiveProject } from './const/ecosystem';
@@ -10,11 +11,18 @@ function App() {
     setEcosystem(salsaEcosystem);
   }, []);
 
+  const AppContainer = styled.main`
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    flex-direction: column;
+  `;
+
   return (
-    <div className="app">
+    <AppContainer>
       <NavBar />
       {ecosystem ? <Analytics ecosystem={ecosystem} /> : 'loading'}
-    </div>
+    </AppContainer>
   );
 }
 
