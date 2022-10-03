@@ -1,12 +1,12 @@
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import TokenCopy from '../../components/TokenCopy';
 import P from '../../components/P';
 import { Card, CardBody, CardBox, CardButton, CardHeader, CardHeaderText } from '../../components/Card';
 import { IActiveProject, IProjectMetric, TezosToken } from '../../const/ecosystem';
-import chart from '../../assets/chart.png';
 import useSpicy from '../../hooks/useSpicy';
 import Header from '../../components/Header';
+import useTzkt from '../../hooks/useTzkt';
 
 export interface IAnalyticsProps {
   ecosystem: IActiveProject[];
@@ -15,7 +15,7 @@ export interface IAnalyticsProps {
 
 const PageWrapper = styled.section`
   padding: 1em;
-  height: 100vh;
+  height: 100%;
   background: #f0f0f0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
@@ -34,18 +34,27 @@ const PageHeader = styled(Header)`
 
 const Cards = styled.section`
   grid-area: cards;
-  display: flex;
+  display: inline-flex;
+  flex-direction: row;
   justify-content: center;
   flex-wrap: wrap;
   gap: 15px;
 `;
 
 export default function Analytics(props: IAnalyticsProps): JSX.Element {
+  const firstRender = useRef(true);
   const { ecosystem, setEcosystem } = props;
-  const { loading, metrics } = useSpicy();
+  const { loaded } = useSpicy();
+  const { burns } = useTzkt();
 
   useEffect(() => {
-    if (!loading && metrics) {
+    if (firstRender.current) {
+      firstRender.current = false;
+      return;
+    }
+
+    if (loaded && burns) {
+      console.log(burns);
       const spicy: IActiveProject[] = ecosystem.map((p) => {
         const spi: TezosToken = {
           contract: 'KT1CS2xKGHNPTauSh5Re4qE3N9PCfG5u4dPx',
@@ -54,10 +63,10 @@ export default function Analytics(props: IAnalyticsProps): JSX.Element {
 
         const metric: IProjectMetric = {
           id: 0,
-          tvl: Number(metrics[0].tvlXtz.toFixed(2)),
+          tvl: 0,
           token: spi,
           tokenSupply: 0,
-          tokenBurn: 0,
+          tokenBurn: burns,
         };
 
         const project: IActiveProject = {
@@ -69,8 +78,10 @@ export default function Analytics(props: IAnalyticsProps): JSX.Element {
       });
 
       setEcosystem(spicy);
+    } else {
+      throw new Error("Can't retrieve metrics");
     }
-  }, [setEcosystem, loading, metrics]);
+  }, [loaded]);
 
   return (
     <PageWrapper>
@@ -84,15 +95,13 @@ export default function Analytics(props: IAnalyticsProps): JSX.Element {
             <CardBody>
               <CardBox>
                 <P>Token Burns</P>
-                <TokenCopy ticker={proj.ticker} Logo={proj.logo} />
+                <TokenCopy amount={proj.metrics?.tokenBurn} ticker={proj.ticker} Logo={proj.logo} />
               </CardBox>
               <CardBox>
                 <P>TVL</P>
-                <P>{!loading && proj.metrics ? `${proj.metrics.tvl || 0} ꜩ` : `loading...`}</P>
+                <P>{proj.metrics ? `${proj.metrics.tvl || 0} ꜩ` : `loading...`}</P>
               </CardBox>
-              <CardBox>
-                <img src={chart} alt="chart" />
-              </CardBox>
+              <CardBox />
             </CardBody>
             <CardButton>View</CardButton>
           </Card>
