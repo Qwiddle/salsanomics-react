@@ -23,7 +23,7 @@ export interface IActiveProject {
 }
 
 export const spicySwap: IActiveProject = {
-  name: 'SpicySwap',
+  name: 'SpicySwap 🌶',
   ticker: 'SPI',
   logo: SalsaLogo,
 };
@@ -49,10 +49,10 @@ export interface ISpicyMetric {
   txCount: number;
 }
 
-export const matterDefi: IActiveProject = {
-  name: 'MatterDefi',
-  ticker: 'MTTR',
+export const salsaDao: IActiveProject = {
+  name: 'SalsaDao',
+  ticker: 'SDAO',
   logo: MatterLogo,
 };
 
-export const salsaEcosystem: IActiveProject[] = [spicySwap, matterDefi];
+export const salsaEcosystem: IActiveProject[] = [spicySwap, salsaDao];
