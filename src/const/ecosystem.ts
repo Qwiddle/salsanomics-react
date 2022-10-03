@@ -1,11 +1,24 @@
 import { ReactComponent as SalsaLogo } from '../assets/spicyswap_logo.svg';
 import { ReactComponent as MatterLogo } from '../assets/matter_logo.svg';
 
+export type TezosToken = {
+  tag: number;
+  contract: string;
+};
+
+export interface IProjectMetric {
+  id: number;
+  tvl: number;
+  token: TezosToken;
+  tokenSupply: number;
+  tokenBurn: number;
+}
+
 export interface IActiveProject {
   name: string;
   ticker: string;
   logo: React.ComponentType;
-  tvl?: number;
+  metrics?: IProjectMetric;
   activity?: number;
 }
 
