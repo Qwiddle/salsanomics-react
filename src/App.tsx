@@ -21,7 +21,7 @@ function App() {
   return (
     <AppContainer>
       <NavBar />
-      {ecosystem ? <Analytics ecosystem={ecosystem} /> : 'loading'}
+      {ecosystem ? <Analytics ecosystem={ecosystem} setEcosystem={setEcosystem} /> : 'loading'}
     </AppContainer>
   );
 }
