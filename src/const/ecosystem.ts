@@ -15,6 +15,7 @@ export interface ICasinoEvent {
   participants?: number;
   buyFee: number;
   buyIn: number;
+  pot: number;
 }
 
 export interface IActiveEvent {}

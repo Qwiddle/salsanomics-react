@@ -70,7 +70,7 @@ export default function Analytics(): JSX.Element {
                   </CardBox>
                   <CardBox>
                     <P>Total Pot (active)</P>
-                    <P>{proj.participants ? `${proj.participants || 0} ꜩ` : `loading...`}</P>
+                    <P>{proj.pot} ꜩ</P>
                   </CardBox>
                 </CardBody>
                 <CardButton>View</CardButton>
