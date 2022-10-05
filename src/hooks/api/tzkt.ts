@@ -1,15 +1,18 @@
+import { ICasinoEvent } from '../../const/ecosystem';
+
 const TZKT_API = `https://api.tzkt.io/v1`;
 
-export const getEventBuyIns = async () => {
+// todo: create type for event buy in
+export const getEventBuyIns = async (): Promise<any> => {
   const res = await fetch(
     `${TZKT_API}/accounts/KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS/operations?entrypoint=buyIn&limit=300`
   );
-  const json = await res.json();
 
+  const json = await res.json();
   return json;
 };
 
-export const getEventDetails = async () => {
+export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
   const res = await fetch(`${TZKT_API}/contracts/KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS/storage/history`);
   const json = await res.json();
 
@@ -35,12 +38,17 @@ export const getEventDetails = async () => {
         return false;
       });
 
+      const buyIn = Number(e.value.buy_in) / 10 ** 6;
+      const participants = now.length;
+      const pot = buyIn * participants;
+
       return {
-        participants: now.length,
+        participants,
+        pot,
+        buyIn,
+        buyFee: Number(e.value.buy_in_fee),
         start: new Date(e.timestamp),
         end: new Date(e.value.ending),
-        buyIn: Number(e.value.buy_in) / 10 ** 6,
-        buyFee: Number(e.value.buy_in_fee),
       };
     });
 
@@ -55,13 +63,8 @@ export const fetchBurns = async (): Promise<number> => {
     const json = await res.json();
 
     const burnAmount = json[0].balance;
-
     return burnAmount;
   }
 
   throw new Error(`Failed to fetch daily metrics.`);
-};
-
-export const fetchTwo = async () => {
-  return fetch('google.com');
 };
