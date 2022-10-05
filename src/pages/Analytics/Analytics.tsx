@@ -38,15 +38,33 @@ const Cards = styled.section`
 export default function Analytics(): JSX.Element {
   const { events } = useTzkt();
 
+  const isActive = (end: Date) => {
+    if (end < new Date()) return false;
+    return true;
+  };
+
+  const sortEvents = (e: any, descend = true) => {
+    const sorted = [...e].sort((a, b) => {
+      if (a.end > b.end) {
+        return descend ? -1 : 1;
+      }
+      return descend ? 1 : -1;
+    });
+
+    return sorted;
+  };
+
   return (
     <PageWrapper>
       <PageHeader>🔥 Salsa Burn Chart</PageHeader>
       <Cards>
         {events
-          ? events.map((proj) => (
+          ? sortEvents(events).map((proj) => (
               <Card>
                 <CardHeader>
-                  <CardHeaderText>{proj.type} Contest</CardHeaderText>
+                  <CardHeaderText>
+                    {proj.type} Contest {isActive(proj.end) ? '🟢' : '🔴'}
+                  </CardHeaderText>
                   <P>
                     {proj.start.toLocaleDateString('en-en', {
                       year: 'numeric',
