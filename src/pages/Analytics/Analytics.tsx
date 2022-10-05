@@ -15,6 +15,10 @@ const PageWrapper = styled.section`
     'header header header'
     'cards cards cards'
     'cards cards cards';
+
+  @media screen and (max-width: 800px) {
+    grid-template-rows: 0.15fr 1.7fr 1fr;
+  }
 `;
 
 const PageHeader = styled(Header)`
