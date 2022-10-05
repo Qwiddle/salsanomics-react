@@ -46,21 +46,19 @@ export default function Analytics(): JSX.Element {
                 <CardHeader>
                   <CardHeaderText>{proj.type} Contest</CardHeaderText>
                   <P>
-                    {`${
-                      proj.start.toLocaleDateString('en-en', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      }) || 0
-                    }`}
-                  </P>
-                  <P>{`->`}</P>
-                  <P>
-                    {new Date(proj.end).toLocaleDateString('en-en', {
+                    {proj.start.toLocaleDateString('en-en', {
                       year: 'numeric',
                       month: 'long',
                       day: 'numeric',
-                    }) || 0}
+                    })}
+                  </P>
+                  <P>{`->`}</P>
+                  <P>
+                    {proj.end.toLocaleDateString('en-en', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    })}
                   </P>
                 </CardHeader>
                 <CardBody>
