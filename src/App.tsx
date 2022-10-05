@@ -9,7 +9,6 @@ const AppContainer = styled.main`
 `;
 
 function App() {
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   return (
     <AppContainer>
       <NavBar />
