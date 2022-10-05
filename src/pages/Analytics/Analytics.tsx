@@ -1,16 +1,9 @@
 import styled from 'styled-components';
-import { useEffect, useRef, useState } from 'react';
 import TokenCopy from '../../components/TokenCopy';
 import P from '../../components/P';
 import { Card, CardBody, CardBox, CardButton, CardHeader, CardHeaderText } from '../../components/Card';
-import { ICasinoEvent } from '../../const/ecosystem';
 import Header from '../../components/Header';
 import useTzkt from '../../hooks/useTzkt';
-
-export interface IAnalyticsProps {
-  ecosystem: ICasinoEvent[];
-  setEcosystem: (arg0: ICasinoEvent[]) => void;
-}
 
 const PageWrapper = styled.section`
   padding: 1em;
@@ -40,44 +33,15 @@ const Cards = styled.section`
   gap: 15px;
 `;
 
-export default function Analytics(props: IAnalyticsProps): JSX.Element {
-  const firstRender = useRef(true);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const { ecosystem, setEcosystem } = props;
-  const { burns, buyIns, events } = useTzkt();
-  const [cEvents, setEvents] = useState<ICasinoEvent[]>();
-
-  useEffect(() => {
-    if (firstRender.current) {
-      setEvents(ecosystem);
-      firstRender.current = false;
-      return;
-    }
-
-    if (burns && buyIns && events) {
-      const casinoEvents: ICasinoEvent[] = events.map((e) => {
-        const event: ICasinoEvent = {
-          type: e.buyIn <= 5 ? 'standard' : 'high',
-          ...e,
-        };
-
-        return event;
-      });
-
-      setEvents(casinoEvents);
-
-      console.log(ecosystem);
-    } else {
-      throw new Error("Can't retrieve metrics");
-    }
-  }, [ecosystem, burns, buyIns, events]);
+export default function Analytics(): JSX.Element {
+  const { events } = useTzkt();
 
   return (
     <PageWrapper>
       <PageHeader>🔥 Salsa Burn Chart</PageHeader>
       <Cards>
-        {cEvents
-          ? cEvents.map((proj) => (
+        {events
+          ? events.map((proj) => (
               <Card>
                 <CardHeader>
                   <CardHeaderText>{proj.type} Contest</CardHeaderText>
@@ -92,13 +56,11 @@ export default function Analytics(props: IAnalyticsProps): JSX.Element {
                   </P>
                   <P>{`->`}</P>
                   <P>
-                    {proj.start
-                      ? new Date(proj.end).toLocaleDateString('en-en', {
-                          year: 'numeric',
-                          month: 'long',
-                          day: 'numeric',
-                        }) || 0
-                      : `loading...`}
+                    {new Date(proj.end).toLocaleDateString('en-en', {
+                      year: 'numeric',
+                      month: 'long',
+                      day: 'numeric',
+                    }) || 0}
                   </P>
                 </CardHeader>
                 <CardBody>
