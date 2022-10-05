@@ -56,7 +56,7 @@ export default function Analytics(): JSX.Element {
 
   return (
     <PageWrapper>
-      <PageHeader>🔥 Salsa Burn Chart</PageHeader>
+      <PageHeader>🎰 Salsa Casino Contests</PageHeader>
       <Cards>
         {events
           ? sortEvents(events).map((proj) => (
