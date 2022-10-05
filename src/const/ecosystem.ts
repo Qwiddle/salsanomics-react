@@ -1,6 +1,9 @@
 import { ReactComponent as SalsaLogo } from '../assets/spicyswap_logo.svg';
 import { ReactComponent as MatterLogo } from '../assets/matter_logo.svg';
 
+export const SDAO: string = 'KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA';
+export const BURNER: string = 'KT1CZMurPAjSfZqcn6LBUNUhG4byE6AJgDT6';
+
 export type CasinoEvent = 'standard' | 'high';
 
 export type TezosToken = {
@@ -13,6 +16,7 @@ export interface ICasinoEvent {
   start: Date;
   end: Date;
   participants?: number;
+  burn: number;
   buyFee: number;
   buyIn: number;
   pot: number;
