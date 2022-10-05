@@ -8,6 +8,20 @@ const casinoMappings: Map<string, CasinoEvent> = new Map([
   ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
 ]);
 
+export const getBurns = async (): Promise<number> => {
+  const req = `${TZKT_API}/tokens/balances?account=KT1CZMurPAjSfZqcn6LBUNUhG4byE6AJgDT6&token.contract=KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA`;
+  const res = await fetch(req);
+
+  if (res.ok) {
+    const json = await res.json();
+
+    const burnAmount = json[0].balance;
+    return burnAmount;
+  }
+
+  throw new Error(`Failed to fetch daily metrics.`);
+};
+
 // todo: create type for event buy in
 export const getEventBuyIns = async (contract: string): Promise<any> => {
   const res = await fetch(`${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`);
@@ -57,18 +71,4 @@ export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
   );
 
   return casinoEvents.flat();
-};
-
-export const fetchBurns = async (): Promise<number> => {
-  const req = `${TZKT_API}/tokens/balances?account=KT1CZMurPAjSfZqcn6LBUNUhG4byE6AJgDT6&token.contract=KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA`;
-  const res = await fetch(req);
-
-  if (res.ok) {
-    const json = await res.json();
-
-    const burnAmount = json[0].balance;
-    return burnAmount;
-  }
-
-  throw new Error(`Failed to fetch daily metrics.`);
 };

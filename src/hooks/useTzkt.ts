@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ICasinoEvent } from '../const/ecosystem';
-import { fetchBurns, getEventDetails } from './api/tzkt';
+import { getBurns, getEventDetails } from './api/tzkt';
 
 const useTzkt = () => {
   const [burnsLoaded, setLoaded] = useState<Boolean>(false);
@@ -8,7 +8,7 @@ const useTzkt = () => {
   const [events, setEvents] = useState<ICasinoEvent[]>([]);
 
   const fetchTzkt = async () => {
-    const tBurns = await fetchBurns();
+    const tBurns = await getBurns();
     const tEvents = await getEventDetails();
 
     setLoaded(true);
