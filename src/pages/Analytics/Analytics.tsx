@@ -7,8 +7,6 @@ import useTzkt from '../../hooks/useTzkt';
 
 const PageWrapper = styled.section`
   padding: 1em;
-  height: 100%;
-  background: #f0f0f0;
   display: grid;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 0.3fr 1.7fr 1fr;

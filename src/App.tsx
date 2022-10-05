@@ -3,8 +3,8 @@ import NavBar from './components/NavBar';
 import Analytics from './pages/Analytics/Analytics';
 
 const AppContainer = styled.main`
-  display: flex;
   height: 100vh;
+  display: flex;
   flex-direction: column;
 `;
 
