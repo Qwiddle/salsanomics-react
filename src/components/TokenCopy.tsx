@@ -4,7 +4,7 @@ import P from './P';
 export interface IAppProps {
   ticker: string;
   amount?: number;
-  Logo: React.ComponentType;
+  Logo?: React.ComponentType;
 }
 
 const TokenDetail = styled.div`
@@ -20,7 +20,7 @@ export default function TokenCopy({ amount = 0, ...props }: IAppProps): JSX.Elem
     <TokenDetail>
       {amount}&nbsp;
       <P>{ticker}</P>
-      <Logo />
+      {Logo ? <Logo /> : ''}
     </TokenDetail>
   );
 }

@@ -2,9 +2,9 @@ import styled from 'styled-components';
 
 export const Card = styled.div`
   width: 300px;
+  height: 65%;
   display: flex;
   padding: 10px;
-  max-height: 400px;
   gap: 10px;
   flex-direction: column;
   align-items: center;
@@ -19,7 +19,6 @@ export const CardHeader = styled.div`
   align-items: center;
   justify-content: space-around;
   width: 250px;
-  min-height: 40px;
   border: 1px solid rgba(27, 31, 35, 0.15);
   border-radius: 6px;
   box-shadow: rgba(27, 31, 35, 0.04) 0 1px 0, rgba(255, 255, 255, 0.25) 0 1px 0 inset;

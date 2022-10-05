@@ -1,10 +1,23 @@
 import { ReactComponent as SalsaLogo } from '../assets/spicyswap_logo.svg';
 import { ReactComponent as MatterLogo } from '../assets/matter_logo.svg';
 
+export type CasinoEvent = 'standard' | 'high';
+
 export type TezosToken = {
   tag: number;
   contract: string;
 };
+
+export interface ICasinoEvent {
+  type?: CasinoEvent;
+  start: Date;
+  end: Date;
+  participants?: number;
+  buyFee: number;
+  buyIn: number;
+}
+
+export interface IActiveEvent {}
 
 export interface IProjectMetric {
   id: number;
@@ -12,6 +25,8 @@ export interface IProjectMetric {
   token: TezosToken;
   tokenSupply: number;
   tokenBurn: number;
+  eventStart: string;
+  eventEnd: string;
 }
 
 export interface IActiveProject {
@@ -23,7 +38,7 @@ export interface IActiveProject {
 }
 
 export const spicySwap: IActiveProject = {
-  name: 'SpicySwap 🌶',
+  name: 'SpicySwap 🌶️',
   ticker: 'SPI',
   logo: SalsaLogo,
 };
@@ -55,4 +70,4 @@ export const salsaDao: IActiveProject = {
   logo: MatterLogo,
 };
 
-export const salsaEcosystem: IActiveProject[] = [spicySwap, salsaDao];
+export const salsaEcosystem: IActiveProject[] = [salsaDao];
