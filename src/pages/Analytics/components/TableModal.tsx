@@ -51,6 +51,30 @@ export interface IModalProps {
 export default function TableModal({ ...props }: IModalProps): JSX.Element {
   const { isOpen, onClose, data } = props;
 
+  const filterBuyIns = (buyIns: any) => {
+    const counts: any = {};
+
+    buyIns.forEach((num: any) => {
+      counts[num.sender.address] = counts[num.sender.address] ? counts[num.sender.address] + 1 : 1;
+    });
+
+    const filtered = buyIns
+      .filter(
+        (value: any, index: any, self: any) =>
+          index === self.findIndex((t: any) => t.sender.address === value.sender.address)
+      )
+      .map((b: any) => {
+        const address = counts[b.sender.address];
+
+        return {
+          ...b,
+          count: address,
+        };
+      });
+
+    return filtered;
+  };
+
   return isOpen ? (
     <Table>
       <THead>
@@ -61,10 +85,10 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
       </THead>
       <TBody>
         {data
-          ? data.map((b: any) => (
+          ? filterBuyIns(data).map((b: any) => (
               <TR>
                 <TD>{b.sender.address}</TD>
-                <TD>{Number(b.amount) / 10 ** 6}</TD>
+                <TD>{Number(b.amount / 10 ** 6) * b.count}</TD>
               </TR>
             ))
           : ''}
