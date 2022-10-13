@@ -97,7 +97,7 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
       <TBody>
         {data
           ? sortBuyIns(filterBuyIns(data)).map((b: any) => (
-              <TR>
+              <TR key={b.sender.address}>
                 <TD>{b.sender.address}</TD>
                 <TD>{Number(b.amount / 10 ** 6) * b.count}</TD>
               </TR>
