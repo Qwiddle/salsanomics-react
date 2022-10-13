@@ -25,7 +25,10 @@ const PageWrapper = styled.section`
 
 const PageHeader = styled(Header)`
   grid-area: header;
-  text-align: center;
+  align-items: center;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 `;
 
 const Cards = styled.section`
@@ -65,7 +68,7 @@ const Modal = styled.section`
 `;
 
 export default function Analytics(): JSX.Element {
-  const { events } = useTzkt();
+  const { events, burns } = useTzkt();
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [buyIns, setBuyIns] = useState<any>();
@@ -97,7 +100,10 @@ export default function Analytics(): JSX.Element {
   return (
     <>
       <PageWrapper>
-        <PageHeader>🎰 Salsa Casino Contests</PageHeader>
+        <PageHeader>
+          <p>🎰 Salsa Casino Contests</p>
+          {burns ? `Total Burn: ${burns} SDAO 🔥` : ''}
+        </PageHeader>
         <Cards>
           {events
             ? sortEvents(events).map((proj) => (
