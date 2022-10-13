@@ -6,14 +6,12 @@ const Table = styled.table`
   border: 2px solid #f9ebe2;
   font-size: 0.9em;
   overflow-y: scroll;
-  height: 50vh;
   display: table-caption;
+  height: 100%;
   width: 100%;
-  table-layout: fixed;
 `;
 
 const TBody = styled.tbody`
-  overflow-y: scroll;
   width: 100%;
   height: 100%;
 `;
@@ -26,7 +24,7 @@ const THead = styled.thead`
 
 const TH = styled.th`
   padding: 12px 15px;
-  min-width: 50px;
+  width: 100%;
 `;
 
 const TD = styled.td`

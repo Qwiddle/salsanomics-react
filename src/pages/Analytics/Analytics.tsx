@@ -38,8 +38,9 @@ const Cards = styled.section`
 `;
 
 const ModalCard = styled.section`
-  height: 50vh;
-  min-width: 300px;
+  height: 40vh;
+  width: 50vw;
+  max-width: 800px;
   padding: 10px;
   pointer-events: all;
   border: 1px solid #d5cbc5;
