@@ -19,6 +19,7 @@ export interface ICasinoEvent {
   burn: number;
   buyFee: number;
   buyIn: number;
+  buyIns: {};
   pot: number;
 }
 
