@@ -91,7 +91,7 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
       <THead>
         <TR>
           <TH>Address</TH>
-          <TH>ꜩ</TH>
+          <TH>ꜩ spent</TH>
         </TR>
       </THead>
       <TBody>
