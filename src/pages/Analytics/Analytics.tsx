@@ -1,8 +1,10 @@
 import styled from 'styled-components';
+import { useState } from 'react';
 import TokenCopy from '../../components/TokenCopy';
 import P from '../../components/P';
 import { Card, CardBody, CardBox, CardButton, CardHeader, CardHeaderText } from '../../components/Card';
 import Header from '../../components/Header';
+import TableModal from './components/TableModal';
 import useTzkt from '../../hooks/useTzkt';
 
 const PageWrapper = styled.section`
@@ -35,8 +37,46 @@ const Cards = styled.section`
   gap: 15px;
 `;
 
+const ModalCard = styled.section`
+  height: 40vh;
+  width: 50vw;
+  max-width: 800px;
+  padding: 10px;
+  pointer-events: all;
+  border: 1px solid #d5cbc5;
+  box-shadow: none;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const Modal = styled.section`
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content center;
+  align-items: center;
+  background: transparent;
+`;
+
 export default function Analytics(): JSX.Element {
   const { events } = useTzkt();
+
+  const [isModalOpen, setModalOpen] = useState(false);
+  const [buyIns, setBuyIns] = useState<any>();
+
+  const toggleModal = (activeBuyIns?: any) => {
+    if (activeBuyIns) {
+      setBuyIns(activeBuyIns);
+    }
+
+    setModalOpen(!isModalOpen);
+  };
 
   const isActive = (end: Date) => {
     if (end < new Date()) return false;
@@ -55,49 +95,67 @@ export default function Analytics(): JSX.Element {
   };
 
   return (
-    <PageWrapper>
-      <PageHeader>🎰 Salsa Casino Contests</PageHeader>
-      <Cards>
-        {events
-          ? sortEvents(events).map((proj) => (
-              <Card>
-                <CardHeader>
-                  <CardHeaderText>
-                    {proj.type} Contest {isActive(proj.end) ? '🟢' : '🔴'}
-                  </CardHeaderText>
-                  <P>
-                    {proj.start.toLocaleDateString('en-en', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </P>
-                  <P>{`->`}</P>
-                  <P>
-                    {proj.end.toLocaleDateString('en-en', {
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric',
-                    })}
-                  </P>
-                </CardHeader>
-                <CardBody>
-                  <CardBox>
-                    <P>Total Burn</P>
-                    <TokenCopy amount={proj.burn} ticker="SDAO" />
-                    <P>Total Buy Ins</P>
-                    {proj.participants}
-                  </CardBox>
-                  <CardBox>
-                    <P>Total Pot</P>
-                    <P>{proj.pot} ꜩ</P>
-                  </CardBox>
-                </CardBody>
-                <CardButton>View</CardButton>
-              </Card>
-            ))
-          : ''}
-      </Cards>
-    </PageWrapper>
+    <>
+      <PageWrapper>
+        <PageHeader>🎰 Salsa Casino Contests</PageHeader>
+        <Cards>
+          {events
+            ? sortEvents(events).map((proj) => (
+                <Card key={proj.buyIns}>
+                  <CardHeader>
+                    <CardHeaderText>
+                      {proj.type} Contest {isActive(proj.end) ? '🟢' : '🔴'}
+                    </CardHeaderText>
+                    <P>
+                      {proj.start.toLocaleDateString('en-en', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </P>
+                    <P>{`->`}</P>
+                    <P>
+                      {proj.end.toLocaleDateString('en-en', {
+                        year: 'numeric',
+                        month: 'long',
+                        day: 'numeric',
+                      })}
+                    </P>
+                  </CardHeader>
+                  <CardBody>
+                    <CardBox>
+                      <P>Total Burn</P>
+                      <TokenCopy amount={proj.burn} ticker="SDAO" />
+                      <P>Total Buy Ins</P>
+                      {proj.participants}
+                    </CardBox>
+                    <CardBox>
+                      <P>Total Pot</P>
+                      <P>{proj.pot} ꜩ</P>
+                    </CardBox>
+                  </CardBody>
+                  <CardButton onClick={() => toggleModal(proj.buyIns)}>View</CardButton>
+                </Card>
+              ))
+            : ''}
+        </Cards>
+      </PageWrapper>
+      {isModalOpen ? (
+        <Modal>
+          <ModalCard>
+            <TableModal isOpen={isModalOpen} onClose={toggleModal} data={buyIns} />
+            <CardButton
+              onClick={() => {
+                toggleModal();
+              }}
+            >
+              Close
+            </CardButton>
+          </ModalCard>
+        </Modal>
+      ) : (
+        ''
+      )}
+    </>
   );
 }

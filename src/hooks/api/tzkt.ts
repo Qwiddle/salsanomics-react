@@ -69,6 +69,7 @@ export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
             type,
             buyFee,
             burn,
+            buyIns: active,
             start: new Date(e.timestamp),
             end: new Date(e.value.ending),
           };
