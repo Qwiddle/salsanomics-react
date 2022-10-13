@@ -37,6 +37,32 @@ const Cards = styled.section`
   gap: 15px;
 `;
 
+const ModalCard = styled.section`
+  height: 50vh;
+  min-width: 300px;
+  padding: 10px;
+  pointer-events: all;
+  border: 1px solid #d5cbc5;
+  box-shadow: none;
+  background-color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 10px;
+`;
+
+const Modal = styled.section`
+  position: absolute;
+  pointer-events: none;
+  display: flex;
+  height: 100vh;
+  width: 100vw;
+  justify-content center;
+  align-items: center;
+  background: transparent;
+`;
+
 export default function Analytics(): JSX.Element {
   const { events } = useTzkt();
 
@@ -114,8 +140,8 @@ export default function Analytics(): JSX.Element {
         </Cards>
       </PageWrapper>
       {isModalOpen ? (
-        <div className="modal">
-          <Card>
+        <Modal>
+          <ModalCard>
             <TableModal isOpen={isModalOpen} onClose={toggleModal} data={buyIns} />
             <CardButton
               onClick={() => {
@@ -124,8 +150,8 @@ export default function Analytics(): JSX.Element {
             >
               Close
             </CardButton>
-          </Card>
-        </div>
+          </ModalCard>
+        </Modal>
       ) : (
         ''
       )}
