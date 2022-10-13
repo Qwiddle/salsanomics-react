@@ -44,6 +44,7 @@ const ModalCard = styled.section`
   height: 40vh;
   width: 50vw;
   max-width: 800px;
+  min-width: 350px;
   padding: 10px;
   pointer-events: all;
   border: 1px solid #d5cbc5;
