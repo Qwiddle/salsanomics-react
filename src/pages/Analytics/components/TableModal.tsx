@@ -48,6 +48,17 @@ export interface IModalProps {
   data: any;
 }
 
+const sortBuyIns = (e: any, descend = true) => {
+  const sorted = [...e].sort((a, b) => {
+    if (a.count > b.count) {
+      return descend ? -1 : 1;
+    }
+    return descend ? 1 : -1;
+  });
+
+  return sorted;
+};
+
 export default function TableModal({ ...props }: IModalProps): JSX.Element {
   const { isOpen, onClose, data } = props;
 
@@ -85,7 +96,7 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
       </THead>
       <TBody>
         {data
-          ? filterBuyIns(data).map((b: any) => (
+          ? sortBuyIns(filterBuyIns(data)).map((b: any) => (
               <TR>
                 <TD>{b.sender.address}</TD>
                 <TD>{Number(b.amount / 10 ** 6) * b.count}</TD>
