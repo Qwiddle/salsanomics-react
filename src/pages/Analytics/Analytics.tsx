@@ -101,8 +101,8 @@ export default function Analytics(): JSX.Element {
     <>
       <PageWrapper>
         <PageHeader>
-          <p>🎰 Salsa Casino Contests</p>
-          {burns ? `Total Burn: ${burns} SDAO 🔥` : ''}
+          <P>🎰 Salsa Casino Contests</P>
+          <P>{burns ? `Total Burn: ${burns} SDAO 🔥` : ''}</P>
         </PageHeader>
         <Cards>
           {events
