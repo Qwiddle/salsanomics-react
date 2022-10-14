@@ -4,6 +4,11 @@ import { ReactComponent as MatterLogo } from '../assets/matter_logo.svg';
 export const SDAO: string = 'KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA';
 export const BURNER: string = 'KT1CZMurPAjSfZqcn6LBUNUhG4byE6AJgDT6';
 
+export const casinoMappings: Map<string, CasinoEvent> = new Map([
+  ['KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS', 'standard'],
+  ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
+]);
+
 export type CasinoEvent = 'standard' | 'high';
 
 export type TezosToken = {
