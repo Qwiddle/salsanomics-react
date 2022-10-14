@@ -13,19 +13,21 @@ export const getBurns = async (): Promise<number> => {
   const req = `${TZKT_API}/tokens/balances?account=${BURNER}&token.contract=${SDAO}`;
   const res = await fetch(req);
 
-  if (res.ok) {
-    const json = await res.json();
+  if (!res.ok) throw new Error(`Failed to fetch daily metrics.`);
 
-    const burnAmount = json[0].balance;
-    return burnAmount;
-  }
+  const json = await res.json();
+  const burnAmount = json[0].balance;
 
-  throw new Error(`Failed to fetch daily metrics.`);
+  return burnAmount;
 };
 
 // todo: create type for event buy in
 export const getEventBuyIns = async (contract: string): Promise<any> => {
-  const res = await fetch(`${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`);
+  const req = `${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`;
+  const res = await fetch(req);
+
+  if (!res.ok) throw new Error(`Failed to fetch Event BuyIns, ${res.status}`);
+
   const json = await res.json();
   return json;
 };
