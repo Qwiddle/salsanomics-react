@@ -1,26 +1,32 @@
 import * as React from 'react';
 import 'typeface-inter';
 import styled from 'styled-components';
+import { CardButton } from './Card';
 
 const Nav = styled.div`
-  height: 84px;
-  display: flex;
+  height: 80px;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
   align-items: center;
-  justify-content: space-around;
-  flex-direction: row;
-  @media screen and (max-width: 600px) {
+  padding-left: 20px;
+  padding-right: 20px;
+  @media screen and (max-width: 700px) {
+    display: flex;
     flex-direction: column;
-    height: 100px;
+    height: 170px;
+    gap: 20px;
   }
 `;
 
 const NavItems = styled.ul`
   list-style: none;
   display: flex;
+  justify-content: center;
   gap: 32px;
-  padding: 0px;
-  @media screen and (max-width: 600px) {
+  padding: 0;
+  @media screen and (max-width: 700px) {
     gap: 18px;
+    order: 2;
   }
 `;
 
@@ -33,13 +39,17 @@ const NavItem = styled.li`
 `;
 
 const Logo = styled.p`
-  min-width: 130px;
+  min-width: 149px;
   font-family: 'Inter';
   font-style: normal;
-  font-weight: 600;
   font-size: 20px;
   line-height: 24px;
   text-transform: capitalize;
+  margin: 0;
+  @media screen and (max-width: 700px) {
+    padding: 10px;
+    order: 1;
+  }
 `;
 
 const A = styled.a`
@@ -68,6 +78,16 @@ const A = styled.a`
   }
 `;
 
+const WalletButton = styled(CardButton)`
+  appearance: none;
+  line-height: 20px;
+  margin-left: auto;
+  @media screen and (max-width: 700px) {
+    margin-right: auto;
+    order: 3;
+  }
+`;
+
 const pages: string[] = ['analytics', 'farm', 'support', 'settings'];
 
 export default function NavBar(): JSX.Element {
@@ -81,6 +101,7 @@ export default function NavBar(): JSX.Element {
           </NavItem>
         ))}
       </NavItems>
+      <WalletButton>Connect Wallet</WalletButton>
     </Nav>
   );
 }
