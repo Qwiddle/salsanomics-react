@@ -9,6 +9,11 @@ const casinoMappings: Map<string, CasinoEvent> = new Map([
   ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
 ]);
 
+type EventBuyIn = {
+  contract: string;
+  timestamp: Date;
+};
+
 const transformEvents = (events: any, buyIns: []): any => {
   const filterEvent = (event: any) => {
     if (event.operation.parameter) {
@@ -25,7 +30,7 @@ const transformEvents = (events: any, buyIns: []): any => {
       return oTimestamp > new Date(event.timestamp) && oTimestamp < new Date(event.value.ending);
     });
 
-    const contract = active[0].target.address;
+    const { contract } = active[0];
     const type = casinoMappings.get(contract);
 
     const buyIn = Number(event.value.buy_in) / 10 ** 6;
@@ -51,15 +56,25 @@ const transformEvents = (events: any, buyIns: []): any => {
   return events.filter(filterEvent).map(populateEvent);
 };
 
-// todo: create type for event buy in
-const getEventBuyIns = async (contract: string): Promise<any> => {
+const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
   const req = `${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`;
   const res = await fetch(req);
 
   if (!res.ok) throw new Error(`Failed to fetch Event BuyIns, ${res.status}`);
 
   const json = await res.json();
-  return json;
+
+  const transformBuyIn = (buyIn: any): EventBuyIn => {
+    const contract = buyIn.target.address;
+    const timestamp = new Date(buyIn.timestamp);
+
+    return {
+      contract,
+      timestamp,
+    };
+  };
+
+  return json.map(transformBuyIn);
 };
 
 const getEventsByContract = async (contract: string): Promise<any> => {
