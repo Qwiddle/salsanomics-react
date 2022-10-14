@@ -73,7 +73,7 @@ const getEventsByContract = async (contract: string): Promise<any> => {
 };
 
 export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
-  const eventDetails = await Promise.all<any>(
+  const casino = await Promise.all<any>(
     casinoContracts.map(async (contract: string) => {
       const buyIns = await getEventBuyIns(contract);
       const events = await getEventsByContract(contract);
@@ -85,11 +85,13 @@ export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
     })
   );
 
-  return eventDetails
+  const eventDetails = casino
     .map((e) => {
       return transformEvents(e.events, e.buyIns);
     })
     .flat();
+
+  return eventDetails;
 };
 
 export const getBurns = async (): Promise<number> => {
