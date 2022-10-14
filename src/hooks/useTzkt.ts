@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { ICasinoEvent } from '../const/ecosystem';
-import { getBurns, getEventDetails } from './api/tzkt';
+import { ICasinoEvent, casinoMappings } from '../const/ecosystem';
+import { getBurns, tzktCasino } from './api/tzkt';
 
 const useTzkt = () => {
   const [burnsLoaded, setLoaded] = useState<Boolean>(false);
@@ -9,7 +9,7 @@ const useTzkt = () => {
 
   const fetchTzkt = async () => {
     const tBurns = await getBurns();
-    const tEvents = await getEventDetails();
+    const tEvents = await tzktCasino(casinoMappings);
 
     setLoaded(true);
     setBurns(tBurns);

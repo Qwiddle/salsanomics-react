@@ -2,11 +2,6 @@ import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
 
 const TZKT_API = `https://api.tzkt.io/v1`;
 
-const casinoMappings: Map<string, CasinoEvent> = new Map([
-  ['KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS', 'standard'],
-  ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
-]);
-
 type EventBuyIn = {
   timestamp: Date;
   amount: number;
@@ -21,16 +16,19 @@ type EventOperation = {
   buyFee: number;
 };
 
-const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): ICasinoEvent[] => {
+const transformEvents = (
+  events: EventOperation[],
+  buyIns: EventBuyIn[],
+  casinoMappings: Map<string, CasinoEvent>
+): ICasinoEvent[] => {
   return events.map((event) => {
-    const active: any = buyIns.filter((b: any) => {
-      const { start, end } = event;
-
-      const oTimestamp = new Date(b.timestamp);
-      return oTimestamp > start && oTimestamp < end;
-    });
-
     const { contract, buyIn, buyFee } = event;
+
+    const filterActive = (b: EventBuyIn) => {
+      return new Date(b.timestamp) > event.start && new Date(b.timestamp) < event.end;
+    };
+
+    const active: any = buyIns.filter(filterActive);
 
     const participants = active.length;
     const pot = buyIn * participants;
@@ -103,9 +101,9 @@ const getEventsByContract = async (contract: string): Promise<EventOperation> =>
   return json.filter(filterEvent).map(transformEvent);
 };
 
-export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
+const getEventDetails = async (contracts: Array<string>): Promise<any> => {
   const casino = await Promise.all<any>(
-    Array.from(casinoMappings.keys()).map(async (contract: string) => {
+    contracts.map(async (contract: string) => {
       const buyIns = await getEventBuyIns(contract);
       const events = await getEventsByContract(contract);
 
@@ -116,13 +114,7 @@ export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
     })
   );
 
-  const eventDetails = casino
-    .map((e) => {
-      return transformEvents(e.events, e.buyIns);
-    })
-    .flat();
-
-  return eventDetails;
+  return casino;
 };
 
 export const getBurns = async (): Promise<number> => {
@@ -135,4 +127,16 @@ export const getBurns = async (): Promise<number> => {
   const burnAmount = json[0].balance;
 
   return burnAmount;
+};
+
+export const tzktCasino = async (casinoMap: Map<string, CasinoEvent>): Promise<ICasinoEvent[]> => {
+  const eventDetails = await getEventDetails(Array.from(casinoMap.keys()));
+
+  const casino = eventDetails
+    .map((e: any) => {
+      return transformEvents(e.events, e.buyIns, casinoMap);
+    })
+    .flat();
+
+  return casino;
 };
