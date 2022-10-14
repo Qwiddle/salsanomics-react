@@ -20,7 +20,7 @@ export const getEventBuyIns = async (contract: string): Promise<any> => {
   return json;
 };
 
-const transformEvents = (events: any, contract: string, buyIns: []): any => {
+const transformEvents = (events: any, buyIns: []): any => {
   return events
     .filter((f: any) => {
       if (f.operation.parameter) {
@@ -31,10 +31,12 @@ const transformEvents = (events: any, contract: string, buyIns: []): any => {
       return false;
     })
     .map((e: any) => {
-      const active = buyIns.filter((b: any) => {
+      const active: any = buyIns.filter((b: any) => {
         const oTimestamp = new Date(b.timestamp);
         return oTimestamp > new Date(e.timestamp) && oTimestamp < new Date(e.value.ending);
       });
+
+      const contract = active[0].target.address;
 
       const participants = active.length;
       const type = casinoMappings.get(contract);
@@ -64,7 +66,7 @@ const getEventsByContract = async (contract: string): Promise<any> => {
   const json = await res.json();
 
   const buyIns = await getEventBuyIns(contract);
-  const transformed = transformEvents(json, contract, buyIns);
+  const transformed = transformEvents(json, buyIns);
 
   return transformed;
 };
