@@ -22,11 +22,11 @@ type EventOperation = {
 };
 
 const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): any => {
-  const populateEvent = (event: any) => {
+  return events.map((event) => {
     const active: any = buyIns.filter((b: any) => {
       const { start, end } = event;
-      const oTimestamp = new Date(b.timestamp);
 
+      const oTimestamp = new Date(b.timestamp);
       return oTimestamp > start && oTimestamp < end;
     });
 
@@ -46,9 +46,7 @@ const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): any =>
       burn,
       buyIns: active,
     };
-  };
-
-  return events.map(populateEvent);
+  });
 };
 
 const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
@@ -59,7 +57,7 @@ const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
 
   const json = await res.json();
 
-  const transformBuyIn = (buyIn: any): EventBuyIn => {
+  return json.map((buyIn: any) => {
     const timestamp = new Date(buyIn.timestamp);
     const sender = buyIn.sender.address;
     const amount = buyIn.amount / 10 ** 6;
@@ -69,9 +67,7 @@ const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
       sender,
       amount,
     };
-  };
-
-  return json.map(transformBuyIn);
+  });
 };
 
 const getEventsByContract = async (contract: string): Promise<EventOperation> => {
