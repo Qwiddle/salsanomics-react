@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/salsanomics-react/static/css/main.3eb89ac2.css",
-    "main.js": "/salsanomics-react/static/js/main.3097bf94.js",
+    "main.js": "/salsanomics-react/static/js/main.49218b7a.js",
     "static/js/787.cfa2ecd5.chunk.js": "/salsanomics-react/static/js/787.cfa2ecd5.chunk.js",
     "static/media/Inter.var.woff2?v=3.18": "/salsanomics-react/static/media/Inter.var.9df5db385c3370707c5b.woff2",
     "static/media/Inter-italic.var.woff2?v=3.18": "/salsanomics-react/static/media/Inter-italic.var.b27297c148a7ef314ce2.woff2",
@@ -46,11 +46,11 @@
     "static/media/spicyswap_logo.svg": "/salsanomics-react/static/media/spicyswap_logo.749f577c2de30365c3062dfddcf973e9.svg",
     "index.html": "/salsanomics-react/index.html",
     "main.3eb89ac2.css.map": "/salsanomics-react/static/css/main.3eb89ac2.css.map",
-    "main.3097bf94.js.map": "/salsanomics-react/static/js/main.3097bf94.js.map",
+    "main.49218b7a.js.map": "/salsanomics-react/static/js/main.49218b7a.js.map",
     "787.cfa2ecd5.chunk.js.map": "/salsanomics-react/static/js/787.cfa2ecd5.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.3eb89ac2.css",
-    "static/js/main.3097bf94.js"
+    "static/js/main.49218b7a.js"
   ]
 }
