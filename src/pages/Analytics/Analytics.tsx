@@ -11,16 +11,12 @@ const PageWrapper = styled.section`
   display: grid;
   padding: 1em;
   grid-template-columns: 1fr 1fr 1fr;
-  grid-template-rows: 0.3fr 1.7fr 1fr;
+  grid-template-rows: 0.15fr 1.7fr 1fr;
   gap: 0px 0px;
   grid-template-areas:
     'header header header'
     'cards cards cards'
     'cards cards cards';
-
-  @media screen and (max-width: 800px) {
-    grid-template-rows: 0.15fr 1.7fr 1fr;
-  }
 `;
 
 const PageHeader = styled(Header)`
@@ -104,13 +100,12 @@ export default function Analytics(): JSX.Element {
     <>
       <PageWrapper>
         <PageHeader>
-          <P>🎰 Salsa Casino Contests</P>
-          <P>{burns ? `Total Burn: ${burns} SDAO 🔥` : ''}</P>
+          <P>{burns ? ` ${burns} SDAO 🔥` : ''}</P>
         </PageHeader>
         <Cards>
           {events
             ? sortEvents(events).map((proj) => (
-                <Card key={proj.buyIns}>
+                <Card key={proj.start}>
                   <CardHeader>
                     <CardHeaderText>
                       {proj.type} Contest {isActive(proj.end) ? '🟢' : '🔴'}
