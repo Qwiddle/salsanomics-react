@@ -62,7 +62,11 @@ const transformEvents = (events: any, buyIns: []): any => {
 };
 
 const getEventsByContract = async (contract: string): Promise<any> => {
-  const res = await fetch(`${TZKT_API}/contracts/${contract}/storage/history`);
+  const req = `${TZKT_API}/contracts/${contract}/storage/history`;
+  const res = await fetch(req);
+
+  if (!res.ok) throw new Error(`Failed to fetch casino events, ${res.status}`);
+
   const json = await res.json();
 
   const buyIns = await getEventBuyIns(contract);
