@@ -21,7 +21,7 @@ type EventOperation = {
   buyFee: number;
 };
 
-const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): any => {
+const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): ICasinoEvent[] => {
   return events.map((event) => {
     const active: any = buyIns.filter((b: any) => {
       const { start, end } = event;
