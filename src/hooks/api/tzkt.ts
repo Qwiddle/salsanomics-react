@@ -10,50 +10,45 @@ const casinoMappings: Map<string, CasinoEvent> = new Map([
 ]);
 
 type EventBuyIn = {
-  contract: string;
   timestamp: Date;
 };
 
-const transformEvents = (events: any, buyIns: []): any => {
-  const filterEvent = (event: any) => {
-    if (event.operation.parameter) {
-      const entryPoint = event.operation.parameter.entrypoint;
-      return entryPoint === 'startContest';
-    }
+type EventOperation = {
+  start: Date;
+  end: Date;
+  contract: string;
+  buyIn: number;
+  buyFee: number;
+};
 
-    return false;
-  };
-
+const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): any => {
   const populateEvent = (event: any) => {
     const active: any = buyIns.filter((b: any) => {
+      const { start, end } = event;
       const oTimestamp = new Date(b.timestamp);
-      return oTimestamp > new Date(event.timestamp) && oTimestamp < new Date(event.value.ending);
+
+      return oTimestamp > start && oTimestamp < end;
     });
 
-    const { contract } = active[0];
-    const type = casinoMappings.get(contract);
-
-    const buyIn = Number(event.value.buy_in) / 10 ** 6;
-    const buyFee = Number(event.value.buy_in_fee);
+    const { contract, buyIn, buyFee } = event;
 
     const participants = active.length;
     const pot = buyIn * participants;
     const burn = buyFee * participants;
 
+    const type = casinoMappings.get(contract);
+
     return {
+      ...event,
       participants,
       pot,
-      buyIn,
       type,
-      buyFee,
       burn,
       buyIns: active,
-      start: new Date(event.timestamp),
-      end: new Date(event.value.ending),
     };
   };
 
-  return events.filter(filterEvent).map(populateEvent);
+  return events.map(populateEvent);
 };
 
 const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
@@ -65,11 +60,9 @@ const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
   const json = await res.json();
 
   const transformBuyIn = (buyIn: any): EventBuyIn => {
-    const contract = buyIn.target.address;
     const timestamp = new Date(buyIn.timestamp);
 
     return {
-      contract,
       timestamp,
     };
   };
@@ -77,14 +70,37 @@ const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
   return json.map(transformBuyIn);
 };
 
-const getEventsByContract = async (contract: string): Promise<any> => {
+const getEventsByContract = async (contract: string): Promise<EventOperation> => {
   const req = `${TZKT_API}/contracts/${contract}/storage/history`;
   const res = await fetch(req);
 
   if (!res.ok) throw new Error(`Failed to fetch casino events, ${res.status}`);
 
   const json = await res.json();
-  return json;
+
+  const filterEvent = (event: any) => {
+    if (event.operation.parameter) {
+      const entryPoint = event.operation.parameter.entrypoint;
+      return entryPoint === 'startContest';
+    }
+
+    return false;
+  };
+
+  const transformEvent = (event: any) => {
+    const buyFee = Number(event.value.buy_in_fee);
+    const buyIn = Number(event.value.buy_in) / 10 ** 6;
+
+    return {
+      buyIn,
+      contract,
+      buyFee,
+      start: new Date(event.timestamp),
+      end: new Date(event.value.ending),
+    };
+  };
+
+  return json.filter(filterEvent).map(transformEvent);
 };
 
 export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
