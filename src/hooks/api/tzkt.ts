@@ -37,13 +37,12 @@ const transformEvents = (events: any, buyIns: []): any => {
       });
 
       const contract = active[0].target.address;
-
-      const participants = active.length;
       const type = casinoMappings.get(contract);
 
       const buyIn = Number(e.value.buy_in) / 10 ** 6;
       const buyFee = Number(e.value.buy_in_fee);
 
+      const participants = active.length;
       const pot = buyIn * participants;
       const burn = buyFee * participants;
 
@@ -68,11 +67,7 @@ const getEventsByContract = async (contract: string): Promise<any> => {
   if (!res.ok) throw new Error(`Failed to fetch casino events, ${res.status}`);
 
   const json = await res.json();
-
-  const buyIns = await getEventBuyIns(contract);
-  const transformed = transformEvents(json, buyIns);
-
-  return transformed;
+  return json;
 };
 
 export const getBurns = async (): Promise<number> => {
@@ -88,7 +83,21 @@ export const getBurns = async (): Promise<number> => {
 };
 
 export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
-  const casinoEvents = await Promise.all<any>(casinoContracts.map(getEventsByContract));
+  const eventDetails = await Promise.all<any>(
+    casinoContracts.map(async (contract: string) => {
+      const buyIns = await getEventBuyIns(contract);
+      const events = await getEventsByContract(contract);
 
-  return casinoEvents.flat();
+      return {
+        buyIns,
+        events,
+      };
+    })
+  );
+
+  return eventDetails
+    .map((e) => {
+      return transformEvents(e.events, e.buyIns);
+    })
+    .flat();
 };
