@@ -18,7 +18,7 @@ export default function TokenCopy({ amount = 0, ...props }: IAppProps): JSX.Elem
 
   return (
     <TokenDetail>
-      {amount}&nbsp;
+      <P>{amount}</P>&nbsp;
       <P>{ticker}</P>
       {Logo ? <Logo /> : ''}
     </TokenDetail>

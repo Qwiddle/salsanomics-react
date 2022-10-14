@@ -131,7 +131,7 @@ export default function Analytics(): JSX.Element {
                       <P>Total Burn</P>
                       <TokenCopy amount={proj.burn} ticker="SDAO" />
                       <P>Total Buy Ins</P>
-                      {proj.participants}
+                      <P>{proj.participants}</P>
                     </CardBox>
                     <CardBox>
                       <P>Total Pot</P>
