@@ -43,6 +43,7 @@ const Logo = styled.p`
   font-family: 'Inter';
   font-style: normal;
   font-size: 20px;
+  font-weight: 500;
   line-height: 24px;
   text-transform: capitalize;
   margin: 0;
@@ -56,6 +57,7 @@ const A = styled.a`
   color: black;
   font-family: 'Inter';
   font-size: 16px;
+  font-weight: 500;
   font-style: normal;
   text-transform: capitalize;
   text-decoration: none;
@@ -82,6 +84,7 @@ const WalletButton = styled(CardButton)`
   appearance: none;
   line-height: 20px;
   margin-left: auto;
+  color: black;
   @media screen and (max-width: 700px) {
     margin-right: auto;
     order: 3;
