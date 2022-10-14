@@ -8,8 +8,8 @@ import TableModal from './components/TableModal';
 import useTzkt from '../../hooks/useTzkt';
 
 const PageWrapper = styled.section`
-  padding: 1em;
   display: grid;
+  padding: 1em;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 0.3fr 1.7fr 1fr;
   gap: 0px 0px;
@@ -28,6 +28,8 @@ const PageHeader = styled(Header)`
   align-items: center;
   width: 100%;
   display: flex;
+  margin: 0;
+  font-weight: 500;
   flex-direction: column;
 `;
 
