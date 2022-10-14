@@ -59,29 +59,31 @@ const sortBuyIns = (e: any, descend = true) => {
   return sorted;
 };
 
+const filterBuyIns = (buyIns: any) => {
+  const counts: any = {};
+
+  buyIns.forEach((num: any) => {
+    counts[num.sender] = counts[num.sender] ? counts[num.sender] + 1 : 1;
+  });
+
+  const filtered = buyIns
+    .filter((value: any, index: any, self: any) => index === self.findIndex((t: any) => t.sender === value.sender))
+    .map((b: any) => {
+      const address = counts[b.sender];
+
+      return {
+        ...b,
+        count: address,
+      };
+    });
+
+  return filtered;
+};
+
 export default function TableModal({ ...props }: IModalProps): JSX.Element {
   const { isOpen, onClose, data } = props;
 
-  const filterBuyIns = (buyIns: any) => {
-    const counts: any = {};
-
-    buyIns.forEach((num: any) => {
-      counts[num.sender] = counts[num.sender] ? counts[num.sender] + 1 : 1;
-    });
-
-    const filtered = buyIns
-      .filter((value: any, index: any, self: any) => index === self.findIndex((t: any) => t.sender === value.sender))
-      .map((b: any) => {
-        const address = counts[b.sender];
-
-        return {
-          ...b,
-          count: address,
-        };
-      });
-
-    return filtered;
-  };
+  const filteredData = sortBuyIns(filterBuyIns(data));
 
   return isOpen ? (
     <Table>
@@ -92,8 +94,8 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
         </TR>
       </THead>
       <TBody>
-        {data
-          ? sortBuyIns(filterBuyIns(data)).map((b: any) => (
+        {filteredData
+          ? filteredData.map((b: any) => (
               <TR key={b.sender}>
                 <TD>{b.sender}</TD>
                 <TD>{Number(b.amount) * b.count}</TD>
