@@ -63,7 +63,7 @@ const Modal = styled.section`
   display: flex;
   height: 100vh;
   width: 100vw;
-  justify-content center;
+  justify-content: center;
   align-items: center;
   background: transparent;
 `;

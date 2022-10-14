@@ -2,80 +2,135 @@ import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
 
 const TZKT_API = `https://api.tzkt.io/v1`;
 
-const casinoContracts = ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS'];
-
 const casinoMappings: Map<string, CasinoEvent> = new Map([
   ['KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS', 'standard'],
   ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
 ]);
 
+type EventBuyIn = {
+  timestamp: Date;
+};
+
+type EventOperation = {
+  start: Date;
+  end: Date;
+  contract: string;
+  buyIn: number;
+  buyFee: number;
+};
+
+const transformEvents = (events: EventOperation[], buyIns: EventBuyIn[]): any => {
+  const populateEvent = (event: any) => {
+    const active: any = buyIns.filter((b: any) => {
+      const { start, end } = event;
+      const oTimestamp = new Date(b.timestamp);
+
+      return oTimestamp > start && oTimestamp < end;
+    });
+
+    const { contract, buyIn, buyFee } = event;
+
+    const participants = active.length;
+    const pot = buyIn * participants;
+    const burn = buyFee * participants;
+
+    const type = casinoMappings.get(contract);
+
+    return {
+      ...event,
+      participants,
+      pot,
+      type,
+      burn,
+      buyIns: active,
+    };
+  };
+
+  return events.map(populateEvent);
+};
+
+const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
+  const req = `${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`;
+  const res = await fetch(req);
+
+  if (!res.ok) throw new Error(`Failed to fetch Event BuyIns, ${res.status}`);
+
+  const json = await res.json();
+
+  const transformBuyIn = (buyIn: any): EventBuyIn => {
+    const timestamp = new Date(buyIn.timestamp);
+
+    return {
+      timestamp,
+    };
+  };
+
+  return json.map(transformBuyIn);
+};
+
+const getEventsByContract = async (contract: string): Promise<EventOperation> => {
+  const req = `${TZKT_API}/contracts/${contract}/storage/history`;
+  const res = await fetch(req);
+
+  if (!res.ok) throw new Error(`Failed to fetch casino events, ${res.status}`);
+
+  const json = await res.json();
+
+  const filterEvent = (event: any) => {
+    if (event.operation.parameter) {
+      const entryPoint = event.operation.parameter.entrypoint;
+      return entryPoint === 'startContest';
+    }
+
+    return false;
+  };
+
+  const transformEvent = (event: any) => {
+    const buyFee = Number(event.value.buy_in_fee);
+    const buyIn = Number(event.value.buy_in) / 10 ** 6;
+
+    return {
+      buyIn,
+      contract,
+      buyFee,
+      start: new Date(event.timestamp),
+      end: new Date(event.value.ending),
+    };
+  };
+
+  return json.filter(filterEvent).map(transformEvent);
+};
+
+export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
+  const casino = await Promise.all<any>(
+    Array.from(casinoMappings.keys()).map(async (contract: string) => {
+      const buyIns = await getEventBuyIns(contract);
+      const events = await getEventsByContract(contract);
+
+      return {
+        buyIns,
+        events,
+      };
+    })
+  );
+
+  const eventDetails = casino
+    .map((e) => {
+      return transformEvents(e.events, e.buyIns);
+    })
+    .flat();
+
+  return eventDetails;
+};
+
 export const getBurns = async (): Promise<number> => {
   const req = `${TZKT_API}/tokens/balances?account=${BURNER}&token.contract=${SDAO}`;
   const res = await fetch(req);
 
-  if (res.ok) {
-    const json = await res.json();
+  if (!res.ok) throw new Error(`Failed to fetch daily metrics.`);
 
-    const burnAmount = json[0].balance;
-    return burnAmount;
-  }
-
-  throw new Error(`Failed to fetch daily metrics.`);
-};
-
-// todo: create type for event buy in
-export const getEventBuyIns = async (contract: string): Promise<any> => {
-  const res = await fetch(`${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`);
   const json = await res.json();
-  return json;
-};
+  const burnAmount = json[0].balance;
 
-export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
-  const casinoEvents = await Promise.all<any>(
-    casinoContracts.map(async (contract) => {
-      const buyIns = await getEventBuyIns(contract);
-
-      const res = await fetch(`${TZKT_API}/contracts/${contract}/storage/history`);
-      const json = await res.json();
-
-      return json
-        .filter((f: any) => {
-          if (f.operation.parameter) {
-            const entryPoint = f.operation.parameter.entrypoint;
-            return entryPoint === 'startContest';
-          }
-
-          return false;
-        })
-        .map((e: any) => {
-          const active = buyIns.filter((b: any) => {
-            const oTimestamp = new Date(b.timestamp);
-            return oTimestamp > new Date(e.timestamp) && oTimestamp < new Date(e.value.ending);
-          });
-
-          const participants = active.length;
-          const type = casinoMappings.get(contract);
-
-          const buyIn = Number(e.value.buy_in) / 10 ** 6;
-          const buyFee = Number(e.value.buy_in_fee);
-
-          const pot = buyIn * participants;
-          const burn = buyFee * participants;
-
-          return {
-            participants,
-            pot,
-            buyIn,
-            type,
-            buyFee,
-            burn,
-            buyIns: active,
-            start: new Date(e.timestamp),
-            end: new Date(e.value.ending),
-          };
-        });
-    })
-  );
-
-  return casinoEvents.flat();
+  return burnAmount;
 };
