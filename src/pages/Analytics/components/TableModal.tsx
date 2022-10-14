@@ -66,16 +66,13 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
     const counts: any = {};
 
     buyIns.forEach((num: any) => {
-      counts[num.sender.address] = counts[num.sender.address] ? counts[num.sender.address] + 1 : 1;
+      counts[num.sender] = counts[num.sender] ? counts[num.sender] + 1 : 1;
     });
 
     const filtered = buyIns
-      .filter(
-        (value: any, index: any, self: any) =>
-          index === self.findIndex((t: any) => t.sender.address === value.sender.address)
-      )
+      .filter((value: any, index: any, self: any) => index === self.findIndex((t: any) => t.sender === value.sender))
       .map((b: any) => {
-        const address = counts[b.sender.address];
+        const address = counts[b.sender];
 
         return {
           ...b,
@@ -97,9 +94,9 @@ export default function TableModal({ ...props }: IModalProps): JSX.Element {
       <TBody>
         {data
           ? sortBuyIns(filterBuyIns(data)).map((b: any) => (
-              <TR key={b.sender.address}>
-                <TD>{b.sender.address}</TD>
-                <TD>{Number(b.amount / 10 ** 6) * b.count}</TD>
+              <TR key={b.sender}>
+                <TD>{b.sender}</TD>
+                <TD>{Number(b.amount) * b.count}</TD>
               </TR>
             ))
           : ''}

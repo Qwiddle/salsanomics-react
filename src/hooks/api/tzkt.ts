@@ -9,6 +9,8 @@ const casinoMappings: Map<string, CasinoEvent> = new Map([
 
 type EventBuyIn = {
   timestamp: Date;
+  amount: number;
+  sender: string;
 };
 
 type EventOperation = {
@@ -59,9 +61,13 @@ const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
 
   const transformBuyIn = (buyIn: any): EventBuyIn => {
     const timestamp = new Date(buyIn.timestamp);
+    const sender = buyIn.sender.address;
+    const amount = buyIn.amount / 10 ** 6;
 
     return {
       timestamp,
+      sender,
+      amount,
     };
   };
 
