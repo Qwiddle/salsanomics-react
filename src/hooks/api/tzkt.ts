@@ -2,8 +2,6 @@ import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
 
 const TZKT_API = `https://api.tzkt.io/v1`;
 
-const casinoContracts = ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS'];
-
 const casinoMappings: Map<string, CasinoEvent> = new Map([
   ['KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS', 'standard'],
   ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
@@ -105,7 +103,7 @@ const getEventsByContract = async (contract: string): Promise<EventOperation> =>
 
 export const getEventDetails = async (): Promise<ICasinoEvent[]> => {
   const casino = await Promise.all<any>(
-    casinoContracts.map(async (contract: string) => {
+    Array.from(casinoMappings.keys()).map(async (contract: string) => {
       const buyIns = await getEventBuyIns(contract);
       const events = await getEventsByContract(contract);
 
