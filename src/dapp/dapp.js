@@ -1,6 +1,7 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import constate from 'constate';
 import { TempleWallet } from '@temple-wallet/dapp';
+import { TezosToolkit } from '@taquito/taquito';
 
 function useDApp({ appName }) {
   const [{ wallet, tezos, accountPkh }, setState] = useState(() => ({
@@ -57,7 +58,9 @@ function useDApp({ appName }) {
       try {
         await wallet.connect(network, opts);
 
-        const tzs = wallet.toTezos();
+        const tzs = new TezosToolkit(network);
+        tzs.setProvider({ wallet });
+
         const pkh = await tzs.wallet.pkh();
 
         setState({
