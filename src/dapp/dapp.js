@@ -1,9 +1,9 @@
-import React from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import constate from 'constate';
 import { TempleWallet } from '@temple-wallet/dapp';
 
 function useDApp({ appName }) {
-  const [{ wallet, tezos, accountPkh }, setState] = React.useState(() => ({
+  const [{ wallet, tezos, accountPkh }, setState] = useState(() => ({
     wallet: null,
     tezos: null,
     accountPkh: null,
@@ -11,7 +11,7 @@ function useDApp({ appName }) {
 
   const ready = Boolean(tezos);
 
-  React.useEffect(() => {
+  useEffect(() => {
     return TempleWallet.onAvailabilityChange(async (available) => {
       if (available) {
         let perm;
@@ -22,6 +22,7 @@ function useDApp({ appName }) {
         }
 
         const wlt = new TempleWallet(appName, perm);
+
         setState({
           wallet: wlt,
           tezos: wlt.connected ? wlt.toTezos() : null,
@@ -37,7 +38,7 @@ function useDApp({ appName }) {
     });
   }, [appName, setState]);
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (!wallet && wallet.connected) {
       console.error('not connected');
     }
@@ -53,7 +54,7 @@ function useDApp({ appName }) {
     });
   }, [wallet, appName, setState]);
 
-  const connect = React.useCallback(
+  const connect = useCallback(
     async (network, opts) => {
       try {
         if (!wallet) {
@@ -84,9 +85,9 @@ function useDApp({ appName }) {
 }
 
 export function useOnBlock(tezos, callback) {
-  const blockHashRef = React.useRef();
+  const blockHashRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     let sub;
 
     function spawnSub() {
