@@ -37,10 +37,6 @@ function useDApp({ appName }) {
   }, [appName, setState]);
 
   useEffect(() => {
-    if (!wallet && wallet.connected) {
-      throw new Error('Not connected');
-    }
-
     return TempleWallet.onPermissionChange((perm) => {
       if (!perm) {
         setState({
