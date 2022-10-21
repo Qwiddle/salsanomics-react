@@ -1,5 +1,4 @@
 import * as React from 'react';
-import 'typeface-inter';
 import ConnectWallet from './ConnectWallet';
 import { Nav, NavItem, NavItems, Logo, A } from './Nav';
 

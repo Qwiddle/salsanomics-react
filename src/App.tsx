@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import 'typeface-inter';
 import NavBar from './components/Nav/NavBar';
 import Analytics from './pages/Analytics/Analytics';
 import { DAppProvider } from './dapp/dapp';
