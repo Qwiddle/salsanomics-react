@@ -1,9 +1,6 @@
-import * as React from 'react';
-import 'typeface-inter';
 import styled from 'styled-components';
-import { CardButton } from './Card';
 
-const Nav = styled.div`
+export const Nav = styled.div`
   height: 80px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -18,7 +15,7 @@ const Nav = styled.div`
   }
 `;
 
-const NavItems = styled.ul`
+export const NavItems = styled.ul`
   list-style: none;
   display: flex;
   justify-content: center;
@@ -30,7 +27,7 @@ const NavItems = styled.ul`
   }
 `;
 
-const NavItem = styled.li`
+export const NavItem = styled.li`
   display: inline-block;
   text-decoration: none;
   &:hover: {
@@ -38,7 +35,7 @@ const NavItem = styled.li`
   }
 `;
 
-const Logo = styled.p`
+export const Logo = styled.p`
   min-width: 149px;
   font-family: 'Inter';
   font-style: normal;
@@ -53,7 +50,7 @@ const Logo = styled.p`
   }
 `;
 
-const A = styled.a`
+export const A = styled.a`
   color: black;
   font-family: 'Inter';
   font-size: 16px;
@@ -79,32 +76,3 @@ const A = styled.a`
     transform: translate3d(0, 0.2em, 0);
   }
 `;
-
-const WalletButton = styled(CardButton)`
-  appearance: none;
-  line-height: 20px;
-  margin-left: auto;
-  color: black;
-  @media screen and (max-width: 700px) {
-    margin-right: auto;
-    order: 3;
-  }
-`;
-
-const pages: string[] = ['analytics', 'farm', 'support', 'settings'];
-
-export default function NavBar(): JSX.Element {
-  return (
-    <Nav>
-      <Logo>📊 Salsanomics</Logo>
-      <NavItems>
-        {pages.map((page) => (
-          <NavItem key={page}>
-            <A href={`/${page}`}>{page}</A>
-          </NavItem>
-        ))}
-      </NavItems>
-      <WalletButton>Connect Wallet</WalletButton>
-    </Nav>
-  );
-}
