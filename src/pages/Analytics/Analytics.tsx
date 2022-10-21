@@ -1,9 +1,9 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import TokenCopy from '../../components/TokenCopy';
-import P from '../../components/P';
+import P from '../../components/Typography/P';
 import { Card, CardBody, CardBox, CardButton, CardHeader, CardHeaderText } from '../../components/Card';
-import Header from '../../components/Header';
+import Header from '../../components/Typography/Header';
 import TableModal from './components/TableModal';
 import useTzkt from '../../hooks/useTzkt';
 

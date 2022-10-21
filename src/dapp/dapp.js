@@ -1,18 +1,10 @@
-import React from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import constate from 'constate';
-import { ThanosWallet } from '@thanos-wallet/dapp';
-
-export const [DAppProvider, useWallet, useTezos, useAccountPkh, useReady, useConnect] = constate(
-  useDApp,
-  (v) => v.wallet,
-  (v) => v.tezos,
-  (v) => v.accountPkh,
-  (v) => v.ready,
-  (v) => v.connect
-);
+import { TempleWallet } from '@temple-wallet/dapp';
+import { TezosToolkit } from '@taquito/taquito';
 
 function useDApp({ appName }) {
-  const [{ wallet, tezos, accountPkh }, setState] = React.useState(() => ({
+  const [{ wallet, tezos, accountPkh }, setState] = useState(() => ({
     wallet: null,
     tezos: null,
     accountPkh: null,
@@ -20,20 +12,21 @@ function useDApp({ appName }) {
 
   const ready = Boolean(tezos);
 
-  React.useEffect(() => {
-    return ThanosWallet.onAvailabilityChange(async (available) => {
+  useEffect(() => {
+    return TempleWallet.onAvailabilityChange(async (available) => {
       if (available) {
-        let perm;
         try {
-          perm = await ThanosWallet.getCurrentPermission();
-        } catch {}
+          const perm = await TempleWallet.getCurrentPermission();
+          const wlt = new TempleWallet(appName, perm);
 
-        const wlt = new ThanosWallet(appName, perm);
-        setState({
-          wallet: wlt,
-          tezos: wlt.connected ? wlt.toTezos() : null,
-          accountPkh: wlt.connected ? await wlt.getPKH() : null,
-        });
+          setState({
+            wallet: wlt,
+            tezos: wlt.connected ? wlt.toTezos() : null,
+            accountPkh: wlt.connected ? await wlt.getPKH() : null,
+          });
+        } catch {
+          throw new Error('Cannot get wallet permissions');
+        }
       } else {
         setState({
           wallet: null,
@@ -44,36 +37,39 @@ function useDApp({ appName }) {
     });
   }, [appName, setState]);
 
-  React.useEffect(() => {
-    if (wallet && wallet.connected) {
-      return ThanosWallet.onPermissionChange((perm) => {
-        if (!perm) {
-          setState({
-            wallet: new ThanosWallet(appName),
-            tezos: null,
-            accountPkh: null,
-          });
-        }
-      });
-    }
+  useEffect(() => {
+    return TempleWallet.onPermissionChange((perm) => {
+      if (!perm) {
+        setState({
+          wallet: new TempleWallet(appName),
+          tezos: null,
+          accountPkh: null,
+        });
+      }
+    });
   }, [wallet, appName, setState]);
 
-  const connect = React.useCallback(
+  const connect = useCallback(
     async (network, opts) => {
+      if (!wallet) {
+        throw new Error('Temple Wallet not available');
+      }
+
       try {
-        if (!wallet) {
-          throw new Error('Thanos Wallet not available');
-        }
         await wallet.connect(network, opts);
-        const tzs = wallet.toTezos();
+
+        const tzs = new TezosToolkit(network);
+        tzs.setProvider({ wallet });
+
         const pkh = await tzs.wallet.pkh();
+
         setState({
           wallet,
           tezos: tzs,
           accountPkh: pkh,
         });
       } catch (err) {
-        alert(`Failed to connect ThanosWallet: ${err.message}`);
+        throw new Error(`Failed to connect TempleWallet: ${err.message}`);
       }
     },
     [setState, wallet]
@@ -89,12 +85,10 @@ function useDApp({ appName }) {
 }
 
 export function useOnBlock(tezos, callback) {
-  const blockHashRef = React.useRef();
+  const blockHashRef = useRef();
 
-  React.useEffect(() => {
+  useEffect(() => {
     let sub;
-    spawnSub();
-    return () => sub.close();
 
     function spawnSub() {
       sub = tezos.stream.subscribe('head');
@@ -103,15 +97,30 @@ export function useOnBlock(tezos, callback) {
         if (blockHashRef.current && blockHashRef.current !== hash) {
           callback(hash);
         }
+
         blockHashRef.current = hash;
       });
+
       sub.on('error', (err) => {
         if (process.env.NODE_ENV === 'development') {
-          console.error(err);
+          throw new Error(err);
         }
+
         sub.close();
         spawnSub();
       });
     }
+
+    spawnSub();
+    return () => sub.close();
   }, [tezos, callback]);
 }
+
+export const [DAppProvider, useWallet, useTezos, useAccountPkh, useReady, useConnect] = constate(
+  useDApp,
+  (v) => v.wallet,
+  (v) => v.tezos,
+  (v) => v.accountPkh,
+  (v) => v.ready,
+  (v) => v.connect
+);
