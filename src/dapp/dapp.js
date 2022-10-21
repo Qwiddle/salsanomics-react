@@ -14,20 +14,18 @@ function useDApp({ appName }) {
   useEffect(() => {
     return TempleWallet.onAvailabilityChange(async (available) => {
       if (available) {
-        let perm;
         try {
-          perm = await TempleWallet.getCurrentPermission();
+          const perm = await TempleWallet.getCurrentPermission();
+          const wlt = new TempleWallet(appName, perm);
+
+          setState({
+            wallet: wlt,
+            tezos: wlt.connected ? wlt.toTezos() : null,
+            accountPkh: wlt.connected ? await wlt.getPKH() : null,
+          });
         } catch {
-          console.error('cannot get permissions');
+          throw new Error('Cannot get wallet permissions');
         }
-
-        const wlt = new TempleWallet(appName, perm);
-
-        setState({
-          wallet: wlt,
-          tezos: wlt.connected ? wlt.toTezos() : null,
-          accountPkh: wlt.connected ? await wlt.getPKH() : null,
-        });
       } else {
         setState({
           wallet: null,
@@ -40,7 +38,7 @@ function useDApp({ appName }) {
 
   useEffect(() => {
     if (!wallet && wallet.connected) {
-      console.error('not connected');
+      throw new Error('Not connected');
     }
 
     return TempleWallet.onPermissionChange((perm) => {
@@ -56,20 +54,23 @@ function useDApp({ appName }) {
 
   const connect = useCallback(
     async (network, opts) => {
+      if (!wallet) {
+        throw new Error('Temple Wallet not available');
+      }
+
       try {
-        if (!wallet) {
-          throw new Error('Temple Wallet not available');
-        }
         await wallet.connect(network, opts);
+
         const tzs = wallet.toTezos();
         const pkh = await tzs.wallet.pkh();
+
         setState({
           wallet,
           tezos: tzs,
           accountPkh: pkh,
         });
       } catch (err) {
-        console.error(`Failed to connect TempleWallet: ${err.message}`);
+        throw new Error(`Failed to connect TempleWallet: ${err.message}`);
       }
     },
     [setState, wallet]
@@ -97,12 +98,15 @@ export function useOnBlock(tezos, callback) {
         if (blockHashRef.current && blockHashRef.current !== hash) {
           callback(hash);
         }
+
         blockHashRef.current = hash;
       });
+
       sub.on('error', (err) => {
         if (process.env.NODE_ENV === 'development') {
-          console.error(err);
+          throw new Error(err);
         }
+
         sub.close();
         spawnSub();
       });
