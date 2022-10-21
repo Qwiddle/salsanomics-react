@@ -1,6 +1,8 @@
 import styled from 'styled-components';
-import NavBar from './components/NavBar';
+import NavBar from './components/Nav/NavBar';
 import Analytics from './pages/Analytics/Analytics';
+import { DAppProvider } from './dapp/dapp';
+import { APP_NAME } from './const/default';
 
 const AppContainer = styled.main`
   height: 100vh;
@@ -10,10 +12,12 @@ const AppContainer = styled.main`
 
 function App() {
   return (
-    <AppContainer>
-      <NavBar />
-      <Analytics />
-    </AppContainer>
+    <DAppProvider appName={APP_NAME}>
+      <AppContainer>
+        <NavBar />
+        <Analytics />
+      </AppContainer>
+    </DAppProvider>
   );
 }
 
