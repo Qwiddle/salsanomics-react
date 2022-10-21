@@ -1,15 +1,6 @@
 import React from 'react';
 import constate from 'constate';
-import { ThanosWallet } from '@thanos-wallet/dapp';
-
-export const [DAppProvider, useWallet, useTezos, useAccountPkh, useReady, useConnect] = constate(
-  useDApp,
-  (v) => v.wallet,
-  (v) => v.tezos,
-  (v) => v.accountPkh,
-  (v) => v.ready,
-  (v) => v.connect
-);
+import { TempleWallet } from '@temple-wallet/dapp';
 
 function useDApp({ appName }) {
   const [{ wallet, tezos, accountPkh }, setState] = React.useState(() => ({
@@ -21,14 +12,16 @@ function useDApp({ appName }) {
   const ready = Boolean(tezos);
 
   React.useEffect(() => {
-    return ThanosWallet.onAvailabilityChange(async (available) => {
+    return TempleWallet.onAvailabilityChange(async (available) => {
       if (available) {
         let perm;
         try {
-          perm = await ThanosWallet.getCurrentPermission();
-        } catch {}
+          perm = await TempleWallet.getCurrentPermission();
+        } catch {
+          console.error('cannot get permissions');
+        }
 
-        const wlt = new ThanosWallet(appName, perm);
+        const wlt = new TempleWallet(appName, perm);
         setState({
           wallet: wlt,
           tezos: wlt.connected ? wlt.toTezos() : null,
@@ -45,24 +38,26 @@ function useDApp({ appName }) {
   }, [appName, setState]);
 
   React.useEffect(() => {
-    if (wallet && wallet.connected) {
-      return ThanosWallet.onPermissionChange((perm) => {
-        if (!perm) {
-          setState({
-            wallet: new ThanosWallet(appName),
-            tezos: null,
-            accountPkh: null,
-          });
-        }
-      });
+    if (!wallet && wallet.connected) {
+      console.error('not connected');
     }
+
+    return TempleWallet.onPermissionChange((perm) => {
+      if (!perm) {
+        setState({
+          wallet: new TempleWallet(appName),
+          tezos: null,
+          accountPkh: null,
+        });
+      }
+    });
   }, [wallet, appName, setState]);
 
   const connect = React.useCallback(
     async (network, opts) => {
       try {
         if (!wallet) {
-          throw new Error('Thanos Wallet not available');
+          throw new Error('Temple Wallet not available');
         }
         await wallet.connect(network, opts);
         const tzs = wallet.toTezos();
@@ -73,7 +68,7 @@ function useDApp({ appName }) {
           accountPkh: pkh,
         });
       } catch (err) {
-        alert(`Failed to connect ThanosWallet: ${err.message}`);
+        console.error(`Failed to connect TempleWallet: ${err.message}`);
       }
     },
     [setState, wallet]
@@ -93,8 +88,6 @@ export function useOnBlock(tezos, callback) {
 
   React.useEffect(() => {
     let sub;
-    spawnSub();
-    return () => sub.close();
 
     function spawnSub() {
       sub = tezos.stream.subscribe('head');
@@ -113,5 +106,17 @@ export function useOnBlock(tezos, callback) {
         spawnSub();
       });
     }
+
+    spawnSub();
+    return () => sub.close();
   }, [tezos, callback]);
 }
+
+export const [DAppProvider, useWallet, useTezos, useAccountPkh, useReady, useConnect] = constate(
+  useDApp,
+  (v) => v.wallet,
+  (v) => v.tezos,
+  (v) => v.accountPkh,
+  (v) => v.ready,
+  (v) => v.connect
+);
