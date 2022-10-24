@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { Route, Routes } from 'react-router-dom';
 import NavBar from './components/Nav/NavBar';
 import Analytics from './pages/Analytics/Analytics';
 import { DAppProvider } from './dapp/dapp';
@@ -15,7 +16,9 @@ function App() {
     <DAppProvider appName={APP_NAME}>
       <AppContainer>
         <NavBar />
-        <Analytics />
+        <Routes>
+          <Route path="/" element={<Analytics />} />
+        </Routes>
       </AppContainer>
     </DAppProvider>
   );
