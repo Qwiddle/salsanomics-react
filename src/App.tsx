@@ -1,3 +1,4 @@
+import 'typeface-inter';
 import styled from 'styled-components';
 import { Route, Routes } from 'react-router-dom';
 import NavBar from './components/Nav/NavBar';
