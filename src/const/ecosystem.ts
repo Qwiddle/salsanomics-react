@@ -7,6 +7,7 @@ export const BURNER: string = 'KT1CZMurPAjSfZqcn6LBUNUhG4byE6AJgDT6';
 export const casinoMappings: Map<string, CasinoEvent> = new Map([
   ['KT1DdxRFoVEjE2FtsuEL1p2iippu6xCw8XhS', 'standard'],
   ['KT1Q3Z9VwmSG6wFNLebD9yRm7PENXHJxHn3n', 'high'],
+  ['KT1HYDwHUnxNptQyrYSNF6uy9145igJ7MNPX', 'high'],
 ]);
 
 export type CasinoEvent = 'standard' | 'high';
