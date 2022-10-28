@@ -33,8 +33,6 @@ export default function Farm(): JSX.Element {
 
   const activeUser = Object.values(findUser());
 
-  console.log(activeUser);
-
   return activeUser ? (
     <PageWrapper>
       {activeUser.map((proj: any) => (
