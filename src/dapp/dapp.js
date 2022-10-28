@@ -102,12 +102,9 @@ export function useOnBlock(tezos, callback) {
       });
 
       sub.on('error', (err) => {
-        if (process.env.NODE_ENV === 'development') {
-          throw new Error(err);
-        }
-
         sub.close();
         spawnSub();
+        throw new Error(err);
       });
     }
 
