@@ -1,7 +1,7 @@
 import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
 import { opBlacklist } from '../../const/default';
 
-const TZKT_API = `https://api.tzkt.io/v1`;
+export const TZKT_API = `https://api.tzkt.io/v1`;
 
 type EventBuyIn = {
   timestamp: Date;
@@ -118,6 +118,30 @@ const getEventDetails = async (contracts: Array<string>): Promise<any> => {
   );
 
   return casino;
+};
+
+export const getTokenName = async (contract: string) => {
+  const req = `${TZKT_API}/contracts/${contract}`;
+  const res = await fetch(req);
+
+  if (!res.ok) throw new Error(`Failed to fetch token name.`);
+
+  const json = await res.json();
+  const tokenName = json.alias;
+
+  return tokenName;
+};
+
+export const getSupply = async (contract: string, id: string) => {
+  const req = `${TZKT_API}/tokens/?contract=${contract}${id ? `&tokenId=${id}` : ``}`;
+  const res = await fetch(req);
+
+  if (!res.ok) throw new Error(`Failed to fetch token supply.`);
+
+  const json = await res.json();
+  const supply = Number(json[0].totalSupply);
+
+  return supply;
 };
 
 export const getBurns = async (): Promise<number> => {

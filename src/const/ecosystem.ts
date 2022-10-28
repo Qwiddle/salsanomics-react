@@ -2,6 +2,7 @@ import { ReactComponent as SalsaLogo } from '../assets/spicyswap_logo.svg';
 import { ReactComponent as MatterLogo } from '../assets/matter_logo.svg';
 
 export const SDAO: string = 'KT19ovJhcsUn4YU8Q5L3BGovKSixfbWcecEA';
+export const MTTR: string = 'KT1K4jn23GonEmZot3pMGth7unnzZ6EaMVjY';
 export const BURNER: string = 'KT1CZMurPAjSfZqcn6LBUNUhG4byE6AJgDT6';
 
 export const casinoMappings: Map<string, CasinoEvent> = new Map([
@@ -58,12 +59,15 @@ export const spicySwap: IActiveProject = {
 export interface ISpicyToken {
   symbol: string;
   derivedXtz: number;
-  tag: number;
+  tag: string;
+  contract: string;
+  tokenId: string;
   decimals: number;
 }
 
 export interface ISpicyPool {
   symbol: string;
+  contract: string;
   derivedXtz: number;
   tag: number;
   decimals: number;
