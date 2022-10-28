@@ -1,7 +1,7 @@
 import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
 import { opBlacklist } from '../../const/default';
 
-const TZKT_API = `https://api.tzkt.io/v1`;
+export const TZKT_API = `https://api.tzkt.io/v1`;
 
 type EventBuyIn = {
   timestamp: Date;
