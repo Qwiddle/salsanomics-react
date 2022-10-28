@@ -10,7 +10,7 @@ import {
 import { fetchSpicyPools, fetchSpicyTokens } from './api/spicy';
 
 const useMatter = () => {
-  const [accounts, setAccounts] = useState();
+  const [accounts, setAccounts] = useState<Map<string, any>>();
 
   const fetchAll = async () => {
     const mAccounts = await getAccountsInternal();
