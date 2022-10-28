@@ -13,12 +13,21 @@ const useMatter = () => {
   const [accounts, setAccounts] = useState<Map<string, any>>();
 
   const fetchAll = async () => {
-    const mAccounts = await getAccountsInternal();
-    const mFarms = await getMatterFarms();
-    const mConfigs = await getMatterConfigs();
-    const mTokens = await fetchSpicyTokens();
-    const mPools = await fetchSpicyPools();
-    const mBalances = await getMatterBalances();
+    const [
+      mAccounts,
+      mFarms,
+      mConfigs,
+      mTokens,
+      mPools,
+      mBalances
+    ] = await Promise.all([
+      getAccountsInternal(),
+      getMatterFarms(),
+      getMatterConfigs(),
+      fetchSpicyTokens(),
+      fetchSpicyPools(),
+      getMatterBalances(),
+    ])
 
     const matchedFarms = matchFarms(mPools, mTokens, mFarms, mConfigs, mBalances);
     const matchedAccounts = mapAccounts(mAccounts, matchedFarms);
