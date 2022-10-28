@@ -1,4 +1,4 @@
-import { ISpicyMetric, ISpicyPool, ISpicyToken, MTTR } from '../../const/ecosystem';
+import { ISpicyMetric, ISpicyPool, ISpicyToken } from '../../const/ecosystem';
 
 const SPICY_API = 'https://spicyb.sdaotools.xyz/api/rest';
 
@@ -90,18 +90,4 @@ export const fetchSpicyPools = async (): Promise<ISpicyPool[]> => {
   }
 
   throw new Error('Failed to fetch SpicySwap pools');
-};
-
-export const fetchMatterPrice = async (agg = calculateDayAgg()): Promise<Number> => {
-  const req = `${SPICY_API}/TokenList?_ilike=${MTTR}:0&day_agg_start=${agg}`;
-  const res = await fetch(req);
-
-  if (res.ok) {
-    const json = await res.json();
-    const price = json.tokens[0].derivedxtz;
-
-    return Number(price);
-  }
-
-  throw new Error('Failed to fetch Matter price');
 };

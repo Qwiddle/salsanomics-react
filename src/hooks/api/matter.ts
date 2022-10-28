@@ -1,5 +1,6 @@
 import { getSupply, getTokenName, TZKT_API } from './tzkt';
 import { MTTR } from '../../const/ecosystem';
+import { fetchTokenPrice } from './spicy';
 
 const mapFarms = async (farm: any) => {
   return {
@@ -8,6 +9,11 @@ const mapFarms = async (farm: any) => {
     value: farm.value,
     supply: await getSupply(farm.key.fa2_address, farm.key.token_id),
   };
+};
+
+export const getMatterPrice = async () => {
+  const price = await fetchTokenPrice(MTTR);
+  return price;
 };
 
 export const getAccountsInternal = async () => {
