@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import styled from 'styled-components';
 import { useState } from 'react';
 import TokenCopy from '../../components/TokenCopy';
@@ -9,7 +10,6 @@ import useTzkt from '../../hooks/useTzkt';
 
 const PageWrapper = styled.section`
   display: grid;
-  padding: 1em;
   grid-template-columns: 1fr 1fr 1fr;
   grid-template-rows: 0.15fr 1.7fr 1fr;
   gap: 0px 0px;

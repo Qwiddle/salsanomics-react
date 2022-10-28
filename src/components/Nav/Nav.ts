@@ -1,7 +1,7 @@
 import styled from 'styled-components';
 
 export const Nav = styled.div`
-  height: 80px;
+  max-height: 80px;
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   align-items: center;
