@@ -1,5 +1,6 @@
 import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
 import { opBlacklist } from '../../const/default';
+import fetchival from 'fetchival'
 
 export const TZKT_API = `https://api.tzkt.io/v1`;
 
@@ -48,122 +49,121 @@ const transformEvents = (
   });
 };
 
-const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
-  const req = `${TZKT_API}/accounts/${contract}/operations?entrypoint=buyIn&limit=300`;
-  const res = await fetch(req);
+const filterEvent = (event: any) => {
+  if (event.operation.parameter) {
+    const entryPoint = event.operation.parameter.entrypoint;
+    const { hash } = event.operation;
 
-  if (!res.ok) throw new Error(`Failed to fetch Event BuyIns, ${res.status}`);
+    return entryPoint === 'startContest' && !opBlacklist.some((h) => h === hash);
+  }
 
-  const json = await res.json();
-
-  return json.map((buyIn: any) => {
-    const timestamp = new Date(buyIn.timestamp);
-    const sender = buyIn.sender.address;
-    const amount = buyIn.amount / 10 ** 6;
-
-    return {
-      timestamp,
-      sender,
-      amount,
-    };
-  });
+  return false;
 };
 
-const getEventsByContract = async (contract: string): Promise<EventOperation> => {
-  const req = `${TZKT_API}/contracts/${contract}/storage/history`;
-  const res = await fetch(req);
+const transformEvent = ({
+  contract,
+  event
+}: { contract: string, event: any }) => {
+  const buyFee = Number(event.value.buy_in_fee);
+  const buyIn = Number(event.value.buy_in) / 10 ** 6;
 
-  if (!res.ok) throw new Error(`Failed to fetch casino events, ${res.status}`);
-
-  const json = await res.json();
-
-  const filterEvent = (event: any) => {
-    if (event.operation.parameter) {
-      const entryPoint = event.operation.parameter.entrypoint;
-      const { hash } = event.operation;
-
-      return entryPoint === 'startContest' && !opBlacklist.some((h) => h === hash);
-    }
-
-    return false;
+  return {
+    buyIn,
+    contract,
+    buyFee,
+    start: new Date(event.timestamp),
+    end: new Date(event.value.ending),
   };
-
-  const transformEvent = (event: any) => {
-    const buyFee = Number(event.value.buy_in_fee);
-    const buyIn = Number(event.value.buy_in) / 10 ** 6;
-
-    return {
-      buyIn,
-      contract,
-      buyFee,
-      start: new Date(event.timestamp),
-      end: new Date(event.value.ending),
-    };
-  };
-
-  return json.filter(filterEvent).map(transformEvent);
 };
 
-const getEventDetails = async (contracts: Array<string>): Promise<any> => {
-  const casino = await Promise.all<any>(
-    contracts.map(async (contract: string) => {
-      const buyIns = await getEventBuyIns(contract);
-      const events = await getEventsByContract(contract);
+// undifferentiated (heavy) lifting
+
+const createTzktAPI = ({ baseApiUrl }) => {
+  const fetch = fetchival(baseApiUrl)
+
+  const getEventBuyIns = async (contract: string): Promise<EventBuyIn> => {
+    const history = await fetch(`accounts/${contract}/operations?entrypoint=buyIn&limit=300`)
+    return history.map((buyIn: any) => {
+      const timestamp = new Date(buyIn.timestamp);
+      const sender = buyIn.sender.address;
+      const amount = buyIn.amount / 10 ** 6;
 
       return {
-        buyIns,
-        events,
+        timestamp,
+        sender,
+        amount,
       };
-    })
-  );
+    });
+  };
 
-  return casino;
-};
+  const getEventsByContract = async (contract: string): Promise<EventOperation> => {
+    const events = await fetch(`contracts/${contract}/storage/history`)
+    return events.filter(filterEvent).map(transformEvent);
+  };
 
-export const getTokenName = async (contract: string) => {
-  const req = `${TZKT_API}/contracts/${contract}`;
-  const res = await fetch(req);
+  const getEventDetails = async (contracts: Array<string>): Promise<any> => {
+    const casino = await Promise.all<any>(
+      contracts.map(async (contract: string) => {
+        const buyIns = await getEventBuyIns(contract);
+        const events = await getEventsByContract(contract);
 
-  if (!res.ok) throw new Error(`Failed to fetch token name.`);
+        return {
+          buyIns,
+          events,
+        };
+      })
+    );
 
-  const json = await res.json();
-  const tokenName = json.alias;
+    return casino;
+  };
 
-  return tokenName;
-};
+  const getTokenName = async (contract: string) => {
+    const { alias } = await fetch(`contracts/${contract}`)
+    return alias
+  };
 
-export const getSupply = async (contract: string, id: string) => {
-  const req = `${TZKT_API}/tokens/?contract=${contract}${id ? `&tokenId=${id}` : ``}`;
-  const res = await fetch(req);
+  const getSupply = async (contract: string, id: string) => {
+    const req = `${TZKT_API}/tokens/?contract=${contract}${id ? `&tokenId=${id}` : ``}`;
+    const res = await fetch(req);
 
-  if (!res.ok) throw new Error(`Failed to fetch token supply.`);
+    if (!res.ok) throw new Error(`Failed to fetch token supply.`);
 
-  const json = await res.json();
-  const supply = Number(json[0].totalSupply);
+    const json = await res.json();
+    const supply = Number(json[0].totalSupply);
 
-  return supply;
-};
+    return supply;
+  };
 
-export const getBurns = async (): Promise<number> => {
-  const req = `${TZKT_API}/tokens/balances?account=${BURNER}&token.contract=${SDAO}`;
-  const res = await fetch(req);
+  const getBurns = async (): Promise<number> => {
+    const req = `${TZKT_API}/tokens/balances?account=${BURNER}&token.contract=${SDAO}`;
+    const res = await fetch(req);
 
-  if (!res.ok) throw new Error(`Failed to fetch daily metrics.`);
+    if (!res.ok) throw new Error(`Failed to fetch daily metrics.`);
 
-  const json = await res.json();
-  const burnAmount = json[0].balance;
+    const json = await res.json();
+    const burnAmount = json[0].balance;
 
-  return burnAmount;
-};
+    return burnAmount;
+  };
 
-export const tzktCasino = async (casinoMap: Map<string, CasinoEvent>): Promise<ICasinoEvent[]> => {
-  const eventDetails = await getEventDetails(Array.from(casinoMap.keys()));
+  const tzktCasino = async (casinoMap: Map<string, CasinoEvent>): Promise<ICasinoEvent[]> => {
+    const eventDetails = await getEventDetails(Array.from(casinoMap.keys()));
 
-  const casino = eventDetails
-    .map((e: any) => {
-      return transformEvents(e.events, e.buyIns, casinoMap);
-    })
-    .flat();
+    const casino = eventDetails
+      .map((e: any) => {
+        return transformEvents(e.events, e.buyIns, casinoMap);
+      })
+      .flat();
 
-  return casino;
-};
+    return casino;
+  };
+
+  return {
+    getTokenName,
+    getSupply,
+    getBurns,
+    tzktCasino,
+  }
+}
+
+export default createTzktAPI
