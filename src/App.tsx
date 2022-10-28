@@ -6,6 +6,7 @@ import Analytics from './pages/Analytics/Analytics';
 import { DAppProvider } from './dapp/dapp';
 import { APP_NAME } from './const/default';
 import NotFound from './pages/NotFound/NotFound';
+import Farm from './pages/Farm/Farm';
 
 const AppContainer = styled.main`
   height: 100vh;
@@ -19,7 +20,8 @@ function App() {
       <AppContainer>
         <NavBar />
         <Routes>
-          <Route path="/" element={<Analytics />} />
+          <Route path="/casino" element={<Analytics />} />
+          <Route path="/farm" element={<Farm />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AppContainer>
