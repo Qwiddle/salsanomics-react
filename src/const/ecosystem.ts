@@ -59,12 +59,15 @@ export const spicySwap: IActiveProject = {
 export interface ISpicyToken {
   symbol: string;
   derivedXtz: number;
-  tag: number;
+  tag: string;
+  contract: string;
+  tokenId: string;
   decimals: number;
 }
 
 export interface ISpicyPool {
   symbol: string;
+  contract: string;
   derivedXtz: number;
   tag: number;
   decimals: number;
