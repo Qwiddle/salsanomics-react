@@ -122,22 +122,24 @@ const getEventDetails = async (contracts: Array<string>): Promise<any> => {
 
 export const getTokenName = async (contract: string) => {
   const req = `${TZKT_API}/contracts/${contract}`;
-  const res = await (await fetch(req)).json();
+  const res = await fetch(req);
 
   if (!res.ok) throw new Error(`Failed to fetch token name.`);
 
-  const tokenName = res.alias;
+  const json = await res.json();
+  const tokenName = json.alias;
 
   return tokenName;
 };
 
 export const getSupply = async (contract: string, id: string) => {
   const req = `${TZKT_API}/tokens/?contract=${contract}${id ? `&tokenId=${id}` : ``}`;
-  const res = await (await fetch(req)).json();
+  const res = await fetch(req);
 
   if (!res.ok) throw new Error(`Failed to fetch token supply.`);
 
-  const supply = Number(res[0].totalSupply);
+  const json = await res.json();
+  const supply = Number(json[0].totalSupply);
 
   return supply;
 };
