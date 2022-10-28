@@ -44,3 +44,14 @@ export const getMatterFarms = async () => {
 
   return farms;
 };
+
+export const getMatterBalances = async () => {
+  const req = `&limit=100&select=balance,token.id%20as%20id,token.contract%20as%20contract,token.standard%20as%20standard,token.tokenId%20as%20token_id`;
+  const res = await fetch(`${TZKT_API}/tokens/balances?account=${MTTR}${req}`);
+
+  if (!res.ok) throw new Error("Couldn't retrieve accounts_internal");
+
+  const json = await res.json();
+
+  return json;
+};
