@@ -120,6 +120,28 @@ const getEventDetails = async (contracts: Array<string>): Promise<any> => {
   return casino;
 };
 
+export const getTokenName = async (contract: string) => {
+  const req = `${TZKT_API}/contracts/${contract}`;
+  const res = await (await fetch(req)).json();
+
+  if (!res.ok) throw new Error(`Failed to fetch token name.`);
+
+  const tokenName = res.alias;
+
+  return tokenName;
+};
+
+export const getSupply = async (contract: string, id: string) => {
+  const req = `${TZKT_API}/tokens/?contract=${contract}${id ? `&tokenId=${id}` : ``}`;
+  const res = await (await fetch(req)).json();
+
+  if (!res.ok) throw new Error(`Failed to fetch token supply.`);
+
+  const supply = Number(res[0].totalSupply);
+
+  return supply;
+};
+
 export const getBurns = async (): Promise<number> => {
   const req = `${TZKT_API}/tokens/balances?account=${BURNER}&token.contract=${SDAO}`;
   const res = await fetch(req);
