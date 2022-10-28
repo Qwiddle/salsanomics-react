@@ -1,4 +1,5 @@
 import { ICasinoEvent, CasinoEvent, SDAO, BURNER } from '../../const/ecosystem';
+import { opBlacklist } from '../../const/default';
 
 const TZKT_API = `https://api.tzkt.io/v1`;
 
@@ -79,7 +80,9 @@ const getEventsByContract = async (contract: string): Promise<EventOperation> =>
   const filterEvent = (event: any) => {
     if (event.operation.parameter) {
       const entryPoint = event.operation.parameter.entrypoint;
-      return entryPoint === 'startContest';
+      const { hash } = event.operation;
+
+      return entryPoint === 'startContest' && !opBlacklist.some((h) => h === hash);
     }
 
     return false;
