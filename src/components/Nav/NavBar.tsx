@@ -2,7 +2,7 @@ import * as React from 'react';
 import ConnectWallet from './ConnectWallet';
 import { Nav, NavItem, NavItems, Logo, A } from './Nav';
 
-const pages: string[] = ['analytics', 'farm', 'support', 'settings'];
+const pages: string[] = ['casino', 'farm', 'settings'];
 
 export default function NavBar(): JSX.Element {
   return (
