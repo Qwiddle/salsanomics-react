@@ -1,7 +1,7 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { FiChevronsDown } from 'react-icons/fi';
-import { useConnect, useAccountPkh } from '../../dapp/dapp';
+import { useConnect, useAccountPkh, useTezos } from '../../dapp/dapp';
 import { CardButton } from '../Card';
 import { NETWORK } from '../../const/default';
 
@@ -35,6 +35,21 @@ const truncate = (fullStr: string, strLen: number) => {
 export default function ConnectWallet(props: { children: string }): JSX.Element {
   const connect = useConnect();
   const accountPkh = useAccountPkh();
+  const tezos = useTezos();
+
+  const [balance, setBalance] = useState<Number>();
+
+  const loadBalance = useCallback(async () => {
+    if (tezos) {
+      const tezosOk = tezos as any;
+      const bal = await tezosOk.tz.getBalance(accountPkh);
+      setBalance(tezosOk.format('mutez', 'tz', bal).toString());
+    }
+  }, [tezos, accountPkh, setBalance]);
+
+  useEffect(() => {
+    loadBalance();
+  }, [loadBalance]);
 
   const getAccountPkh = useMemo(() => {
     if (!accountPkh) return undefined;
@@ -54,14 +69,14 @@ export default function ConnectWallet(props: { children: string }): JSX.Element 
     }
   }, [connect]);
 
-  if (!getAccountPkh) {
-    return <WalletButton onClick={handleConnect}>{children}</WalletButton>;
-  }
-
-  return (
+  return balance ? (
     <WalletButton onClick={handleConnect}>
-      {truncate(getAccountPkh, 13)}
-      <FiChevronsDown style={{ color: 'red' }} />
+      <>
+        {truncate(getAccountPkh as string, 13)} {balance}
+        <FiChevronsDown style={{ color: 'red' }} />
+      </>
     </WalletButton>
+  ) : (
+    <WalletButton onClick={handleConnect}>{children}</WalletButton>
   );
 }
